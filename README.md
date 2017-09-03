@@ -67,7 +67,7 @@ use Chubbyphp\Negotiation\ContentTypeNegotiator;
 $request = ...;
 $request->withHeader('Content-Type', 'application/xml; charset=UTF-8')
 
-$negotiator = new AcceptNegotiator(['application/json', 'application/xml', 'application/x-yaml']);
+$negotiator = new ContentTypeNegotiator(['application/json', 'application/xml', 'application/x-yaml']);
 $value = $negotiator->negotiate($request); // NegotiatedValue
 $value->getValue(); // application/xml
 $value->getAttributes(); // ['charset' => 'UTF-8']
