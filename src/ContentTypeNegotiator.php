@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 /**
  * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
  */
-final class ContentTypeNegotiator implements NegotiatorInterface
+final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
 {
     /**
      * @var array
