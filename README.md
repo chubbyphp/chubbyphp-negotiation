@@ -20,7 +20,7 @@ A simple negotiation library.
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-negotiation][1].
 
 ```sh
-composer require chubbyphp/chubbyphp-negotiation "~1.0@beta"
+composer require chubbyphp/chubbyphp-negotiation "~1.0"
 ```
 
 ## Usage
