@@ -25,7 +25,7 @@ composer require chubbyphp/chubbyphp-negotiation "~1.0"
 
 ## Usage
 
-### AcceptNegotiator
+### AcceptLanguageNegotiator
 
 ```php
 <?php
