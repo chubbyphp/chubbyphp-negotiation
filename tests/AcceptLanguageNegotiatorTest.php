@@ -11,6 +11,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 final class AcceptLanguageNegotiatorTest extends \PHPUnit_Framework_TestCase
 {
+    public function testGetSupportedLocales()
+    {
+        $negotiator = new AcceptLanguageNegotiator(['en']);
+
+        self::assertEquals(['en'], $negotiator->getSupportedLocales());
+    }
+
     public function testWithoutSupportedMimeTypes()
     {
         $negotiator = new AcceptLanguageNegotiator([]);

@@ -25,6 +25,14 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     }
 
     /**
+     * @return string[]
+     */
+    public function getSupportedMediaTypes(): array
+    {
+        return $this->supportedMediaTypes;
+    }
+
+    /**
      * @param Request $request
      *
      * @return NegotiatedValue|null

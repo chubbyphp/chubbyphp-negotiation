@@ -25,6 +25,14 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
     }
 
     /**
+     * @return string[]
+     */
+    public function getSupportedMediaTypes(): array
+    {
+        return $this->supportedMediaTypes;
+    }
+
+    /**
      * @param Request $request
      *
      * @return NegotiatedValue|null

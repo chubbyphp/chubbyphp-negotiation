@@ -11,6 +11,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 final class ContentTypeNegotiatorTest extends \PHPUnit_Framework_TestCase
 {
+    public function testGetSupportedMediaTypes()
+    {
+        $negotiator = new ContentTypeNegotiator(['application/json']);
+
+        self::assertEquals(['application/json'], $negotiator->getSupportedMediaTypes());
+    }
+
     public function testWithoutSupportedMimeTypes()
     {
         $negotiator = new ContentTypeNegotiator([]);

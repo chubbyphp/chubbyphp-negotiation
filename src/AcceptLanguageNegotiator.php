@@ -25,6 +25,14 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     }
 
     /**
+     * @return string[]
+     */
+    public function getSupportedLocales(): array
+    {
+        return $this->supportedLocales;
+    }
+
+    /**
      * @param Request $request
      *
      * @return NegotiatedValue|null
