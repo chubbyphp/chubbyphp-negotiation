@@ -35,7 +35,7 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
     /**
      * @param Request $request
      *
-     * @return NegotiatedValue|null
+     * @return NegotiatedValueInterface|null
      */
     public function negotiate(Request $request)
     {
@@ -53,7 +53,7 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
     /**
      * @param string $header
      *
-     * @return NegotiatedValue|null
+     * @return NegotiatedValueInterface|null
      */
     private function compareAgainstSupportedMediaTypes(string $header)
     {
