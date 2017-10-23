@@ -35,7 +35,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     /**
      * @param Request $request
      *
-     * @return NegotiatedValue|null
+     * @return NegotiatedValueInterface|null
      */
     public function negotiate(Request $request)
     {
@@ -86,7 +86,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     /**
      * @param array $aggregatedValues
      *
-     * @return NegotiatedValue|null
+     * @return NegotiatedValueInterface|null
      */
     private function compareAgainstSupportedMediaTypes(array $aggregatedValues)
     {

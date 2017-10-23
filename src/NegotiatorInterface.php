@@ -11,7 +11,7 @@ interface NegotiatorInterface
     /**
      * @param Request $request
      *
-     * @return NegotiatedValue|null
+     * @return NegotiatedValueInterface|null
      */
     public function negotiate(Request $request);
 }

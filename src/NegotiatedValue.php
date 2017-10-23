@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Negotiation;
 
-final class NegotiatedValue
+final class NegotiatedValue implements NegotiatedValueInterface
 {
     /**
      * @var string
