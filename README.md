@@ -33,7 +33,7 @@ composer require chubbyphp/chubbyphp-negotiation "~1.0"
 use Chubbyphp\Negotiation\AcceptLanguageNegotiator;
 
 $request = ...;
-$request->withHeader('Accept-Language', 'de,en-US;q=0.7,en;q=0.3')
+$request->withHeader('Accept-Language', 'de,en-US;q=0.7,en;q=0.3');
 
 $negotiator = new AcceptLanguageNegotiator(['en', 'de']);
 $value = $negotiator->negotiate($request); // NegotiatedValue
@@ -49,7 +49,7 @@ $value->getAttributes(); // ['q' => '1.0']
 use Chubbyphp\Negotiation\AcceptNegotiator;
 
 $request = ...;
-$request->withHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q =0.8')
+$request->withHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q =0.8');
 
 $negotiator = new AcceptNegotiator(['application/json', 'application/xml', 'application/x-yaml']);
 $value = $negotiator->negotiate($request); // NegotiatedValue
@@ -65,7 +65,7 @@ $value->getAttributes(); // ['q' => '0.9']
 use Chubbyphp\Negotiation\ContentTypeNegotiator;
 
 $request = ...;
-$request->withHeader('Content-Type', 'application/xml; charset=UTF-8')
+$request->withHeader('Content-Type', 'application/xml; charset=UTF-8');
 
 $negotiator = new ContentTypeNegotiator(['application/json', 'application/xml', 'application/x-yaml']);
 $value = $negotiator->negotiate($request); // NegotiatedValue
