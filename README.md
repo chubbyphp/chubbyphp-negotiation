@@ -15,6 +15,10 @@ A simple negotiation library.
  * php: ~7.0
  * psr/http-message: ~1.0
 
+## Suggest
+
+ * pimple/pimple: ~3.0
+
 ## Installation
 
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-negotiation][1].
@@ -71,6 +75,30 @@ $negotiator = new ContentTypeNegotiator(['application/json', 'application/xml', 
 $value = $negotiator->negotiate($request); // NegotiatedValue
 $value->getValue(); // application/xml
 $value->getAttributes(); // ['charset' => 'UTF-8']
+```
+
+### NegotiationProvider
+
+```php
+<?php
+
+use Chubbyphp\Negotiation\Provider\NegotiationProvider;
+use Pimple\Container;
+use Psr\Http\Message\ServerRequestInterface;
+
+$container = new Container();
+$container->register(new NegotiationProvider);
+
+$request = ...;
+
+$container['negotiator.acceptNegotiator']
+    ->negotiate($request);
+
+$container['negotiator.acceptNegotiator']
+    ->negotiate($request);
+
+$container['negotiator.contentTypeNegotiator']
+    ->negotiate($request);
 ```
 
 ## Copyright
