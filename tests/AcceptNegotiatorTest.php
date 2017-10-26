@@ -4,12 +4,13 @@ namespace Chubbyphp\Tests\Negotiation;
 
 use Chubbyphp\Negotiation\AcceptNegotiator;
 use Chubbyphp\Negotiation\NegotiatedValue;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * @covers \Chubbyphp\Negotiation\AcceptNegotiator
  */
-final class AcceptNegotiatorTest extends \PHPUnit_Framework_TestCase
+final class AcceptNegotiatorTest extends TestCase
 {
     public function testGetSupportedMediaTypes()
     {

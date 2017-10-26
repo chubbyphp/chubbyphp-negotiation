@@ -4,12 +4,13 @@ namespace Chubbyphp\Tests\Negotiation;
 
 use Chubbyphp\Negotiation\AcceptLanguageNegotiator;
 use Chubbyphp\Negotiation\NegotiatedValue;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * @covers \Chubbyphp\Negotiation\AcceptLanguageNegotiator
  */
-final class AcceptLanguageNegotiatorTest extends \PHPUnit_Framework_TestCase
+final class AcceptLanguageNegotiatorTest extends TestCase
 {
     public function testGetSupportedLocales()
     {

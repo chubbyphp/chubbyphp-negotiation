@@ -3,11 +3,12 @@
 namespace Chubbyphp\Tests\Negotiation;
 
 use Chubbyphp\Negotiation\NegotiatedValue;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Chubbyphp\Negotiation\NegotiatedValue
  */
-final class NegotiatedValueTest extends \PHPUnit_Framework_TestCase
+final class NegotiatedValueTest extends TestCase
 {
     public function testWithoutAttributes()
     {
