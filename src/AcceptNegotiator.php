@@ -95,13 +95,18 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
                 return new NegotiatedValue(reset($this->supportedMediaTypes), $attributes);
             }
 
-            list($type, $subType) = explode('/', $mediaType);
+            $mediaTypeParts = explode('/', $mediaType);
+            if (2 !== count($mediaTypeParts)) {
+                continue;
+            }
+
+            list($type, $subType) = $mediaTypeParts;
 
             if ('*' === $type && '*' !== $subType) { // skip invalid value
                 continue;
             }
 
-            $subTypePattern = $subType !== '*' ? preg_quote($subType) : '.+';
+            $subTypePattern = '*' !== $subType ? preg_quote($subType) : '.+';
 
             foreach ($this->supportedMediaTypes as $supportedMediaType) {
                 if (1 === preg_match('/^'.preg_quote($type).'\/'.$subTypePattern.'$/', $supportedMediaType)) {

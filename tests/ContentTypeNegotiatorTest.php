@@ -65,6 +65,11 @@ final class ContentTypeNegotiatorTest extends TestCase
                 'supportedMediaTypes' => ['application/json', 'application/xml', 'application/x-yaml'],
                 'expectedContentType' => null,
             ],
+            [
+                'request' => $this->getRequest('xml; charset=UTF-8'), // invalid format
+                'supportedMediaTypes' => ['application/xml'],
+                'expectedContentType' => null,
+            ],
         ];
     }
 
