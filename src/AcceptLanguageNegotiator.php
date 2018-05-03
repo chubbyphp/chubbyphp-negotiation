@@ -91,12 +91,27 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     private function compareAgainstSupportedLocales(array $aggregatedValues)
     {
         foreach ($aggregatedValues as $locale => $attributes) {
-            if ('*' === $locale) {
-                return new NegotiatedValue(reset($this->supportedLocales), $attributes);
-            }
-
             if (in_array($locale, $this->supportedLocales, true)) {
                 return new NegotiatedValue($locale, $attributes);
+            }
+        }
+
+        foreach ($aggregatedValues as $locale => $attributes) {
+            $localeParts = explode('-', $locale);
+            if (2 !== count($localeParts)) {
+                continue;
+            }
+
+            $language = $localeParts[0];
+
+            if (in_array($language, $this->supportedLocales, true)) {
+                return new NegotiatedValue($language, $attributes);
+            }
+        }
+
+        foreach ($aggregatedValues as $locale => $attributes) {
+            if ('*' === $locale) {
+                return new NegotiatedValue(reset($this->supportedLocales), $attributes);
             }
         }
 

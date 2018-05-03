@@ -75,6 +75,26 @@ final class AcceptLanguageNegotiatorTest extends TestCase
                 'supportedMediaTypes' => ['de', 'fu', 'en'],
                 'expectedAcceptLanguage' => new NegotiatedValue('fu', ['q' => '0.9']),
             ],
+            [
+                'request' => $this->getRequest('de-CH,de;q=0.8'),
+                'supportedMediaTypes' => ['de'],
+                'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.8']),
+            ],
+            [
+                'request' => $this->getRequest('de-CH'),
+                'supportedMediaTypes' => ['de'],
+                'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
+            ],
+            [
+                'request' => $this->getRequest('de'),
+                'supportedMediaTypes' => ['de-CH'],
+                'expectedAcceptLanguage' => null,
+            ],
+            [
+                'request' => $this->getRequest('*,de;q=0.1'),
+                'supportedMediaTypes' => ['de'],
+                'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.1']),
+            ],
         ];
     }
 
