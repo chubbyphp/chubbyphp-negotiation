@@ -90,6 +90,28 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
      */
     private function compareAgainstSupportedMediaTypes(array $aggregatedValues)
     {
+        if (null !== $negotiatedValue = $this->exactCompareAgainstSupportedMediaTypes($aggregatedValues)) {
+            return $negotiatedValue;
+        }
+
+        if (null !== $negotiatedValue = $this->typeCompareAgainstSupportedMediaTypes($aggregatedValues)) {
+            return $negotiatedValue;
+        }
+
+        if (isset($aggregatedValues['*/*'])) {
+            return new NegotiatedValue(reset($this->supportedMediaTypes), $aggregatedValues['*/*']);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array $aggregatedValues
+     *
+     * @return NegotiatedValueInterface|null
+     */
+    private function exactCompareAgainstSupportedMediaTypes(array $aggregatedValues)
+    {
         foreach ($aggregatedValues as $mediaType => $attributes) {
             if ('*/*' === $mediaType) {
                 continue;
@@ -100,6 +122,16 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
             }
         }
 
+        return null;
+    }
+
+    /**
+     * @param array $aggregatedValues
+     *
+     * @return NegotiatedValueInterface|null
+     */
+    private function typeCompareAgainstSupportedMediaTypes(array $aggregatedValues)
+    {
         foreach ($aggregatedValues as $mediaType => $attributes) {
             if ('*/*' === $mediaType) {
                 continue;
@@ -120,12 +152,6 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
                 if (1 === preg_match('/^'.preg_quote($type).'\/.+$/', $supportedMediaType)) {
                     return new NegotiatedValue($supportedMediaType, $attributes);
                 }
-            }
-        }
-
-        foreach ($aggregatedValues as $mediaType => $attributes) {
-            if ('*/*' === $mediaType) {
-                return new NegotiatedValue(reset($this->supportedMediaTypes), $attributes);
             }
         }
 
