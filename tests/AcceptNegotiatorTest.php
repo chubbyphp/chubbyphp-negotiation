@@ -85,6 +85,11 @@ final class AcceptNegotiatorTest extends TestCase
                 'supportedMediaTypes' => ['application/json'],
                 'expectedAccept' => new NegotiatedValue('application/json', ['q' => '0.5']),
             ],
+            [
+                'request' => $this->getRequest('*/*, application/xml;q=0.1'),
+                'supportedMediaTypes' => ['application/xml'],
+                'expectedAccept' => new NegotiatedValue('application/xml', ['q' => '0.1']),
+            ],
         ];
     }
 

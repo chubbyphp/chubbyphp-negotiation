@@ -92,7 +92,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     {
         foreach ($aggregatedValues as $mediaType => $attributes) {
             if ('*/*' === $mediaType) {
-                return new NegotiatedValue(reset($this->supportedMediaTypes), $attributes);
+                continue;
             }
 
             $mediaTypeParts = explode('/', $mediaType);
@@ -112,6 +112,12 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
                 if (1 === preg_match('/^'.preg_quote($type).'\/'.$subTypePattern.'$/', $supportedMediaType)) {
                     return new NegotiatedValue($supportedMediaType, $attributes);
                 }
+            }
+        }
+
+        foreach ($aggregatedValues as $mediaType => $attributes) {
+            if ('*/*' === $mediaType) {
+                return new NegotiatedValue(reset($this->supportedMediaTypes), $attributes);
             }
         }
 
