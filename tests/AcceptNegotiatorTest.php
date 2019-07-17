@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Chubbyphp\Tests\Negotiation;
 
 use Chubbyphp\Negotiation\AcceptNegotiator;
@@ -9,6 +11,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * @covers \Chubbyphp\Negotiation\AcceptNegotiator
+ *
+ * @internal
  */
 final class AcceptNegotiatorTest extends TestCase
 {
@@ -108,7 +112,8 @@ final class AcceptNegotiatorTest extends TestCase
         /** @var Request|\PHPUnit_Framework_MockObject_MockObject $request */
         $request = $this->getMockBuilder(Request::class)
             ->setMethods(['hasHeader', 'getHeaderLine'])
-            ->getMockForAbstractClass();
+            ->getMockForAbstractClass()
+        ;
 
         $request->expects(self::any())->method('hasHeader')->with('Accept')->willReturn(null !== $acceptHeader);
         $request->expects(self::any())->method('getHeaderLine')->with('Accept')->willReturn($acceptHeader);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Chubbyphp\Tests\Negotiation;
 
 use Chubbyphp\Negotiation\NegotiatedValue;
@@ -7,6 +9,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Chubbyphp\Negotiation\NegotiatedValue
+ *
+ * @internal
  */
 final class NegotiatedValueTest extends TestCase
 {

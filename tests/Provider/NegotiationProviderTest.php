@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Chubbyphp\Tests\Negotiation\Provider;
 
 use Chubbyphp\Negotiation\AcceptLanguageNegotiator;
@@ -11,6 +13,8 @@ use Pimple\Container;
 
 /**
  * @covers \Chubbyphp\Negotiation\Provider\NegotiationProvider
+ *
+ * @internal
  */
 final class NegotiationProviderTest extends TestCase
 {

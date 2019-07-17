@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Chubbyphp\Tests\Negotiation;
 
 use Chubbyphp\Negotiation\ContentTypeNegotiator;
@@ -9,6 +11,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * @covers \Chubbyphp\Negotiation\ContentTypeNegotiator
+ *
+ * @internal
  */
 final class ContentTypeNegotiatorTest extends TestCase
 {
@@ -83,7 +87,8 @@ final class ContentTypeNegotiatorTest extends TestCase
         /** @var Request|\PHPUnit_Framework_MockObject_MockObject $request */
         $request = $this->getMockBuilder(Request::class)
             ->setMethods(['hasHeader', 'getHeaderLine'])
-            ->getMockForAbstractClass();
+            ->getMockForAbstractClass()
+        ;
 
         $request->expects(self::any())->method('hasHeader')->with('Content-Type')->willReturn(null !== $acceptHeader);
         $request->expects(self::any())->method('getHeaderLine')->with('Content-Type')->willReturn($acceptHeader);
