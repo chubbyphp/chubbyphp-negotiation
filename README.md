@@ -105,6 +105,6 @@ $container['negotiator.contentTypeNegotiator']
 
 ## Copyright
 
-Dominik Zogg 2017
+Dominik Zogg 2019
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-negotiation
