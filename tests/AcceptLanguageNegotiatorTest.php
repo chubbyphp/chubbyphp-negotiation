@@ -71,24 +71,39 @@ final class AcceptLanguageNegotiatorTest extends TestCase
     {
         return [
             [
-                'request' => $this->getRequest('de,en-US;q=0.7,en;q=0.3'),
+                'request' => $this->getRequest('de,en;q=0.3,en-US;q=0.7'),
                 'supportedMediaTypes' => ['en', 'de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [
-                'request' => $this->getRequest('de,en;q=0.3'),
+                'request' => $this->getRequest('de, en -US;q    =0.7,en;     q=0.3'),
+                'supportedMediaTypes' => ['en', 'de'],
+                'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
+            ],
+            [
+                'request' => $this->getRequest('de,en;q=0.3,en   - US ; q = 0.7'),
                 'supportedMediaTypes' => ['en'],
                 'expectedAcceptLanguage' => new NegotiatedValue('en', ['q' => '0.3']),
             ],
             [
-                'request' => $this->getRequest('de,en;q=0.3'),
+                'request' => $this->getRequest('de,                       en ; q                   =         0.3   '),
+                'supportedMediaTypes' => ['en'],
+                'expectedAcceptLanguage' => new NegotiatedValue('en', ['q' => '0.3']),
+            ],
+            [
+                'request' => $this->getRequest('pt ; q= 0.5,de,en;q=0.3'),
                 'supportedMediaTypes' => ['fr'],
                 'expectedAcceptLanguage' => null,
             ],
             [
-                'request' => $this->getRequest('en-US;q=0.7,*;q=0.3'),
+                'request' => $this->getRequest('en-US;q=0.7,*;q=0.3,fr; q=0.8'),
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.3']),
+            ],
+            [
+                'request' => $this->getRequest('en-US;q=0.7,*;q=0.3,fr; q=0.8'),
+                'supportedMediaTypes' => ['fr'],
+                'expectedAcceptLanguage' => new NegotiatedValue('fr', ['q' => '0.8']),
             ],
             [
                 'request' => $this->getRequest('en; q=0.1, fr; q=0.4, fu; q=0.9, de; q=0.2'),
@@ -116,7 +131,7 @@ final class AcceptLanguageNegotiatorTest extends TestCase
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.1']),
             ],
             [
-                'request' => $this->getRequest('de-DE-AT'),
+                'request' => $this->getRequest('de-DE-AT,en-US'),
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => null,
             ],

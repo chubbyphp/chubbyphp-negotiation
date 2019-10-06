@@ -71,12 +71,12 @@ final class ContentTypeNegotiatorTest extends TestCase
     {
         return [
             [
-                'request' => $this->getRequest('application/xml; charset=UTF-8'),
+                'request' => $this->getRequest(' application/xml ; charset = UTF-8 '),
                 'supportedMediaTypes' => ['application/json', 'application/xml', 'application/x-yaml'],
                 'expectedContentType' => new NegotiatedValue('application/xml', ['charset' => 'UTF-8']),
             ],
             [
-                'request' => $this->getRequest('application/xml; charset=UTF-8'),
+                'request' => $this->getRequest('application/xml                 ; charset=UTF-8'),
                 'supportedMediaTypes' => ['application/json'],
                 'expectedContentType' => null,
             ],
