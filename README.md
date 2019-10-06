@@ -15,11 +15,11 @@ A simple negotiation library.
 ## Requirements
 
  * php: ^7.2
- * psr/http-message: ~1.0
+ * psr/http-message: ^1.0
 
 ## Suggest
 
- * pimple/pimple: ~3.0
+ * pimple/pimple: ^3.2.3
 
 ## Installation
 
