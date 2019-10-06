@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class NegotiatedValueTest extends TestCase
 {
-    public function testWithoutAttributes()
+    public function testWithoutAttributes(): void
     {
         $negotiatedValue = new NegotiatedValue('application/json');
 
@@ -22,7 +22,7 @@ final class NegotiatedValueTest extends TestCase
         self::assertEquals([], $negotiatedValue->getAttributes());
     }
 
-    public function testWithAttributes()
+    public function testWithAttributes(): void
     {
         $negotiatedValue = new NegotiatedValue('application/json', ['q' => '0.7']);
 

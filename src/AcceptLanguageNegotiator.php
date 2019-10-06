@@ -12,12 +12,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterface
 {
     /**
-     * @var array
+     * @var array<string>
      */
     private $supportedLocales;
 
     /**
-     * @param array $supportedLocales
+     * @param array<string> $supportedLocales
      */
     public function __construct(array $supportedLocales)
     {
@@ -25,7 +25,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getSupportedLocales(): array
     {
@@ -55,7 +55,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     /**
      * @param string $header
      *
-     * @return array
+     * @return array<string, array>
      */
     private function aggregatedValues(string $header): array
     {
@@ -84,7 +84,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     }
 
     /**
-     * @param array $aggregatedValues
+     * @param array<string, array> $aggregatedValues
      *
      * @return NegotiatedValueInterface|null
      */
@@ -106,7 +106,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     }
 
     /**
-     * @param array $aggregatedValues
+     * @param array<string, array> $aggregatedValues
      *
      * @return NegotiatedValueInterface|null
      */
@@ -126,7 +126,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     }
 
     /**
-     * @param array $aggregatedValues
+     * @param array<string, array> $aggregatedValues
      *
      * @return NegotiatedValueInterface|null
      */

@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Negotiation;
 
+use Chubbyphp\Mock\Call;
+use Chubbyphp\Mock\MockByCallsTrait;
 use Chubbyphp\Negotiation\ContentTypeNegotiator;
 use Chubbyphp\Negotiation\NegotiatedValue;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @covers \Chubbyphp\Negotiation\ContentTypeNegotiator
@@ -16,36 +19,49 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 final class ContentTypeNegotiatorTest extends TestCase
 {
-    public function testGetSupportedMediaTypes()
+    use MockByCallsTrait;
+
+    public function testGetSupportedMediaTypes(): void
     {
         $negotiator = new ContentTypeNegotiator(['application/json']);
 
         self::assertEquals(['application/json'], $negotiator->getSupportedMediaTypes());
     }
 
-    public function testWithoutSupportedMimeTypes()
+    public function testWithoutSupportedMimeTypes(): void
     {
         $negotiator = new ContentTypeNegotiator([]);
 
-        self::assertNull($negotiator->negotiate($this->getRequest()));
+        /** @var ServerRequestInterface|MockObject $request */
+        $request = $this->getMockByCalls(ServerRequestInterface::class);
+
+        self::assertNull($negotiator->negotiate($request));
     }
 
-    public function testWithoutHeader()
+    public function testWithoutHeader(): void
     {
         $negotiator = new ContentTypeNegotiator(['application/json']);
 
-        self::assertNull($negotiator->negotiate($this->getRequest()));
+        /** @var ServerRequestInterface|MockObject $request */
+        $request = $this->getMockByCalls(ServerRequestInterface::class, [
+            Call::create('hasHeader')->with('Content-Type')->willReturn(false),
+        ]);
+
+        self::assertNull($negotiator->negotiate($request));
     }
 
     /**
      * @dataProvider getToNegotiateHeaders
      *
-     * @param Request              $request
-     * @param array                $supportedMediaTypes
-     * @param NegotiatedValue|null $expectedContentType
+     * @param ServerRequestInterface $request
+     * @param array                  $supportedMediaTypes
+     * @param NegotiatedValue|null   $expectedContentType
      */
-    public function testNegotiate(Request $request, array $supportedMediaTypes, NegotiatedValue $expectedContentType = null)
-    {
+    public function testNegotiate(
+        ServerRequestInterface $request,
+        array $supportedMediaTypes,
+        NegotiatedValue $expectedContentType = null
+    ): void {
         $negotiator = new ContentTypeNegotiator($supportedMediaTypes);
 
         self::assertEquals($expectedContentType, $negotiator->negotiate($request));
@@ -78,21 +94,21 @@ final class ContentTypeNegotiatorTest extends TestCase
     }
 
     /**
-     * @param string|null $acceptHeader
+     * @param string|null $contentType
      *
-     * @return Request
+     * @return ServerRequestInterface
      */
-    private function getRequest(string $acceptHeader = null): Request
+    private function getRequest(string $contentType = null): ServerRequestInterface
     {
-        /** @var Request|\PHPUnit_Framework_MockObject_MockObject $request */
-        $request = $this->getMockBuilder(Request::class)
-            ->setMethods(['hasHeader', 'getHeaderLine'])
-            ->getMockForAbstractClass()
-        ;
+        if (null === $contentType) {
+            return $this->getMockByCalls(ServerRequestInterface::class, [
+                Call::create('hasHeader')->with('Content-Type')->willReturn(false),
+            ]);
+        }
 
-        $request->expects(self::any())->method('hasHeader')->with('Content-Type')->willReturn(null !== $acceptHeader);
-        $request->expects(self::any())->method('getHeaderLine')->with('Content-Type')->willReturn($acceptHeader);
-
-        return $request;
+        return $this->getMockByCalls(ServerRequestInterface::class, [
+            Call::create('hasHeader')->with('Content-Type')->willReturn(true),
+            Call::create('getHeaderLine')->with('Content-Type')->willReturn($contentType),
+        ]);
     }
 }

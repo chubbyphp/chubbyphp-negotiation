@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Negotiation;
 
+use Chubbyphp\Mock\Call;
+use Chubbyphp\Mock\MockByCallsTrait;
 use Chubbyphp\Negotiation\AcceptNegotiator;
 use Chubbyphp\Negotiation\NegotiatedValue;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @covers \Chubbyphp\Negotiation\AcceptNegotiator
@@ -16,36 +19,49 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 final class AcceptNegotiatorTest extends TestCase
 {
-    public function testGetSupportedMediaTypes()
+    use MockByCallsTrait;
+
+    public function testGetSupportedMediaTypes(): void
     {
         $negotiator = new AcceptNegotiator(['application/json']);
 
         self::assertEquals(['application/json'], $negotiator->getSupportedMediaTypes());
     }
 
-    public function testWithoutSupportedMimeTypes()
+    public function testWithoutSupportedMimeTypes(): void
     {
         $negotiator = new AcceptNegotiator([]);
 
-        self::assertNull($negotiator->negotiate($this->getRequest()));
+        /** @var ServerRequestInterface|MockObject $request */
+        $request = $this->getMockByCalls(ServerRequestInterface::class);
+
+        self::assertNull($negotiator->negotiate($request));
     }
 
-    public function testWithoutHeader()
+    public function testWithoutHeader(): void
     {
         $negotiator = new AcceptNegotiator(['application/json']);
 
-        self::assertNull($negotiator->negotiate($this->getRequest()));
+        /** @var ServerRequestInterface|MockObject $request */
+        $request = $this->getMockByCalls(ServerRequestInterface::class, [
+            Call::create('hasHeader')->with('Accept')->willReturn(false),
+        ]);
+
+        self::assertNull($negotiator->negotiate($request));
     }
 
     /**
      * @dataProvider getToNegotiateHeaders
      *
-     * @param Request              $request
-     * @param array                $supportedMediaTypes
-     * @param NegotiatedValue|null $expectedAccept
+     * @param ServerRequestInterface $request
+     * @param array                  $supportedMediaTypes
+     * @param NegotiatedValue|null   $expectedAccept
      */
-    public function testNegotiate(Request $request, array $supportedMediaTypes, NegotiatedValue $expectedAccept = null)
-    {
+    public function testNegotiate(
+        ServerRequestInterface $request,
+        array $supportedMediaTypes,
+        NegotiatedValue $expectedAccept = null
+    ): void {
         $negotiator = new AcceptNegotiator($supportedMediaTypes);
 
         self::assertEquals($expectedAccept, $negotiator->negotiate($request));
@@ -99,25 +115,30 @@ final class AcceptNegotiatorTest extends TestCase
                 'supportedMediaTypes' => ['application/xml'],
                 'expectedAccept' => new NegotiatedValue('application/xml', ['q' => '0.1']),
             ],
+            [
+                'request' => $this->getRequest('text/html, application/*;q=0.1'),
+                'supportedMediaTypes' => ['application/json'],
+                'expectedAccept' => new NegotiatedValue('application/json', ['q' => '0.1']),
+            ],
         ];
     }
 
     /**
      * @param string|null $acceptHeader
      *
-     * @return Request
+     * @return ServerRequestInterface
      */
-    private function getRequest(string $acceptHeader = null): Request
+    private function getRequest(string $acceptHeader = null): ServerRequestInterface
     {
-        /** @var Request|\PHPUnit_Framework_MockObject_MockObject $request */
-        $request = $this->getMockBuilder(Request::class)
-            ->setMethods(['hasHeader', 'getHeaderLine'])
-            ->getMockForAbstractClass()
-        ;
+        if (null === $acceptHeader) {
+            return $this->getMockByCalls(ServerRequestInterface::class, [
+                Call::create('hasHeader')->with('Accept-Language')->willReturn(false),
+            ]);
+        }
 
-        $request->expects(self::any())->method('hasHeader')->with('Accept')->willReturn(null !== $acceptHeader);
-        $request->expects(self::any())->method('getHeaderLine')->with('Accept')->willReturn($acceptHeader);
-
-        return $request;
+        return $this->getMockByCalls(ServerRequestInterface::class, [
+            Call::create('hasHeader')->with('Accept')->willReturn(true),
+            Call::create('getHeaderLine')->with('Accept')->willReturn($acceptHeader),
+        ]);
     }
 }

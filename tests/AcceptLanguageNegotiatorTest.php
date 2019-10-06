@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Negotiation;
 
+use Chubbyphp\Mock\Call;
+use Chubbyphp\Mock\MockByCallsTrait;
 use Chubbyphp\Negotiation\AcceptLanguageNegotiator;
 use Chubbyphp\Negotiation\NegotiatedValue;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @covers \Chubbyphp\Negotiation\AcceptLanguageNegotiator
@@ -16,36 +19,49 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 final class AcceptLanguageNegotiatorTest extends TestCase
 {
-    public function testGetSupportedLocales()
+    use MockByCallsTrait;
+
+    public function testGetSupportedLocales(): void
     {
         $negotiator = new AcceptLanguageNegotiator(['en']);
 
         self::assertEquals(['en'], $negotiator->getSupportedLocales());
     }
 
-    public function testWithoutSupportedMimeTypes()
+    public function testWithoutSupportedMimeTypes(): void
     {
         $negotiator = new AcceptLanguageNegotiator([]);
 
-        self::assertNull($negotiator->negotiate($this->getRequest()));
+        /** @var ServerRequestInterface|MockObject $request */
+        $request = $this->getMockByCalls(ServerRequestInterface::class);
+
+        self::assertNull($negotiator->negotiate($request));
     }
 
-    public function testWithoutHeader()
+    public function testWithoutHeader(): void
     {
         $negotiator = new AcceptLanguageNegotiator(['en']);
 
-        self::assertNull($negotiator->negotiate($this->getRequest()));
+        /** @var ServerRequestInterface|MockObject $request */
+        $request = $this->getMockByCalls(ServerRequestInterface::class, [
+            Call::create('hasHeader')->with('Accept-Language')->willReturn(false),
+        ]);
+
+        self::assertNull($negotiator->negotiate($request));
     }
 
     /**
      * @dataProvider getToNegotiateHeaders
      *
-     * @param Request              $request
-     * @param array                $supportedLocales
-     * @param NegotiatedValue|null $expectedAcceptLanguage
+     * @param ServerRequestInterface $request
+     * @param array                  $supportedLocales
+     * @param NegotiatedValue|null   $expectedAcceptLanguage
      */
-    public function testNegotiate(Request $request, array $supportedLocales, NegotiatedValue $expectedAcceptLanguage = null)
-    {
+    public function testNegotiate(
+        ServerRequestInterface $request,
+        array $supportedLocales,
+        NegotiatedValue $expectedAcceptLanguage = null
+    ): void {
         $negotiator = new AcceptLanguageNegotiator($supportedLocales);
 
         self::assertEquals($expectedAcceptLanguage, $negotiator->negotiate($request));
@@ -110,19 +126,19 @@ final class AcceptLanguageNegotiatorTest extends TestCase
     /**
      * @param string|null $acceptHeader
      *
-     * @return Request
+     * @return ServerRequestInterface
      */
-    private function getRequest(string $acceptHeader = null): Request
+    private function getRequest(string $acceptHeader = null): ServerRequestInterface
     {
-        /** @var Request|\PHPUnit_Framework_MockObject_MockObject $request */
-        $request = $this->getMockBuilder(Request::class)
-            ->setMethods(['hasHeader', 'getHeaderLine'])
-            ->getMockForAbstractClass()
-        ;
+        if (null === $acceptHeader) {
+            return $this->getMockByCalls(ServerRequestInterface::class, [
+                Call::create('hasHeader')->with('Accept-Language')->willReturn(false),
+            ]);
+        }
 
-        $request->expects(self::any())->method('hasHeader')->with('Accept-Language')->willReturn(null !== $acceptHeader);
-        $request->expects(self::any())->method('getHeaderLine')->with('Accept-Language')->willReturn($acceptHeader);
-
-        return $request;
+        return $this->getMockByCalls(ServerRequestInterface::class, [
+            Call::create('hasHeader')->with('Accept-Language')->willReturn(true),
+            Call::create('getHeaderLine')->with('Accept-Language')->willReturn($acceptHeader),
+        ]);
     }
 }

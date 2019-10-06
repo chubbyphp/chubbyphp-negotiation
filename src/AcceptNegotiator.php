@@ -12,12 +12,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 final class AcceptNegotiator implements AcceptNegotiatorInterface
 {
     /**
-     * @var array
+     * @var array<string>
      */
     private $supportedMediaTypes;
 
     /**
-     * @param array $supportedMediaTypes
+     * @param array<string> $supportedMediaTypes
      */
     public function __construct(array $supportedMediaTypes)
     {
@@ -25,7 +25,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getSupportedMediaTypes(): array
     {
@@ -55,7 +55,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     /**
      * @param string $header
      *
-     * @return array
+     * @return array<string, array>
      */
     private function aggregatedValues(string $header): array
     {
@@ -84,7 +84,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     }
 
     /**
-     * @param array $aggregatedValues
+     * @param array<string, array> $aggregatedValues
      *
      * @return NegotiatedValueInterface|null
      */
@@ -106,7 +106,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     }
 
     /**
-     * @param array $aggregatedValues
+     * @param array<string, array> $aggregatedValues
      *
      * @return NegotiatedValueInterface|null
      */
@@ -126,7 +126,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     }
 
     /**
-     * @param array $aggregatedValues
+     * @param array<string, array> $aggregatedValues
      *
      * @return NegotiatedValueInterface|null
      */

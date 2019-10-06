@@ -17,6 +17,7 @@ return PhpCsFixer\Config::create()
         'array_syntax' => ['syntax' => 'short'],
         'declare_strict_types' => true,
         'dir_constant' => true,
+        'final_class' => true,
         'is_null' => true,
         'linebreak_after_opening_tag' => true,
         'list_syntax' => true,
@@ -30,6 +31,7 @@ return PhpCsFixer\Config::create()
         'php_unit_namespaced' => true,
         'php_unit_no_expectation_annotation' => true,
         'ternary_to_null_coalescing' => true,
+        'void_return' => true,
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder)

@@ -18,7 +18,7 @@ use Pimple\Container;
  */
 final class NegotiationProviderTest extends TestCase
 {
-    public function testRegister()
+    public function testRegister(): void
     {
         $container = new Container();
         $container->register(new NegotiationProvider());

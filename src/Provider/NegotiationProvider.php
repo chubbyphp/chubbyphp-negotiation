@@ -15,7 +15,7 @@ final class NegotiationProvider implements ServiceProviderInterface
     /**
      * @param Container $container
      */
-    public function register(Container $container)
+    public function register(Container $container): void
     {
         $container['negotiator.acceptNegotiator'] = function () use ($container) {
             return new AcceptNegotiator($container['negotiator.acceptNegotiator.values']);
