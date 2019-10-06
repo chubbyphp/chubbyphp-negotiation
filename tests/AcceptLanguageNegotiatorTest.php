@@ -135,6 +135,11 @@ final class AcceptLanguageNegotiatorTest extends TestCase
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => null,
             ],
+            [
+                'request' => $this->getRequest('en,fr,it,de-CH'),
+                'supportedMediaTypes' => ['de'],
+                'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
+            ],
         ];
     }
 

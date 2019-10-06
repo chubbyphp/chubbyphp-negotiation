@@ -113,10 +113,6 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     private function exactCompareAgainstSupportedMediaTypes(array $aggregatedValues)
     {
         foreach ($aggregatedValues as $mediaType => $attributes) {
-            if ('*/*' === $mediaType) {
-                continue;
-            }
-
             if (in_array($mediaType, $this->supportedMediaTypes, true)) {
                 return new NegotiatedValue($mediaType, $attributes);
             }
@@ -133,10 +129,6 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     private function typeCompareAgainstSupportedMediaTypes(array $aggregatedValues)
     {
         foreach ($aggregatedValues as $mediaType => $attributes) {
-            if ('*/*' === $mediaType) {
-                continue;
-            }
-
             $mediaTypeParts = explode('/', $mediaType);
             if (2 !== count($mediaTypeParts)) {
                 continue; // skip invalid value

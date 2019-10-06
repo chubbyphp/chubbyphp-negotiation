@@ -113,10 +113,6 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     private function exactCompareAgainstSupportedLocales(array $aggregatedValues)
     {
         foreach ($aggregatedValues as $locale => $attributes) {
-            if ('*' === $locale) {
-                continue;
-            }
-
             if (in_array($locale, $this->supportedLocales, true)) {
                 return new NegotiatedValue($locale, $attributes);
             }
@@ -133,10 +129,6 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     private function languageCompareAgainstSupportedLocales(array $aggregatedValues)
     {
         foreach ($aggregatedValues as $locale => $attributes) {
-            if ('*' === $locale) {
-                continue;
-            }
-
             $localeParts = explode('-', $locale);
             if (2 !== count($localeParts)) {
                 continue;
