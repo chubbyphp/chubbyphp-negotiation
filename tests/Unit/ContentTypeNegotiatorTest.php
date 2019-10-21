@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chubbyphp\Tests\Negotiation;
+namespace Chubbyphp\Tests\Negotiation\Unit;
 
 use Chubbyphp\Mock\Call;
 use Chubbyphp\Mock\MockByCallsTrait;
@@ -88,6 +88,16 @@ final class ContentTypeNegotiatorTest extends TestCase
             [
                 'request' => $this->getRequest('xml; charset=UTF-8'), // invalid format
                 'supportedMediaTypes' => ['application/xml'],
+                'expectedContentType' => null,
+            ],
+            [
+                'request' => $this->getRequest('application/jsonx+xml; charset=UTF-8'),
+                'supportedMediaTypes' => ['application/xml'],
+                'expectedContentType' => new NegotiatedValue('application/xml', ['charset' => 'UTF-8']),
+            ],
+            [
+                'request' => $this->getRequest('application/jsonx+xml; charset=UTF-8'),
+                'supportedMediaTypes' => ['application/json'],
                 'expectedContentType' => null,
             ],
         ];

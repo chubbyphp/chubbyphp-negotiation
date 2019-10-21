@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chubbyphp\Tests\Negotiation;
+namespace Chubbyphp\Tests\Negotiation\Unit;
 
 use Chubbyphp\Mock\Call;
 use Chubbyphp\Mock\MockByCallsTrait;
@@ -156,6 +156,21 @@ final class AcceptNegotiatorTest extends TestCase
                 'request' => $this->getRequest('text/html, applicatio[]n./*;q=0.1'),
                 'supportedMediaTypes' => ['application/json'],
                 'expectedAccept' => null,
+            ],
+            [
+                'request' => $this->getRequest('application, application/ld+json ; q=0.7, application/*,application/json ; q=0.8, application/jsonx+xml;q=0.5'),
+                'supportedMediaTypes' => ['application/json'],
+                'expectedAccept' => new NegotiatedValue('application/json', ['q' => '0.8']),
+            ],
+            [
+                'request' => $this->getRequest('application, application/ld+json ; q=0.7, application/json ; q=0.8, application/*,application/jsonx+xml;q=0.5'),
+                'supportedMediaTypes' => ['application/xml'],
+                'expectedAccept' => new NegotiatedValue('application/xml', ['q' => '0.5']),
+            ],
+            [
+                'request' => $this->getRequest('application/json ; q=0.8, application/*,application/jsonx+xml;q=0.5'),
+                'supportedMediaTypes' => ['application/x-yaml'],
+                'expectedAccept' => new NegotiatedValue('application/x-yaml', ['q' => '1.0']),
             ],
         ];
     }

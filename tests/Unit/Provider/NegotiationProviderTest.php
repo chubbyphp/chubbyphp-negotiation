@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chubbyphp\Tests\Negotiation\Provider;
+namespace Chubbyphp\Tests\Negotiation\Unit\Provider;
 
 use Chubbyphp\Negotiation\AcceptLanguageNegotiator;
 use Chubbyphp\Negotiation\AcceptNegotiator;

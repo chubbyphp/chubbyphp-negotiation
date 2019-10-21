@@ -12,12 +12,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterface
 {
     /**
-     * @var array<string>
+     * @var array<int, string>
      */
     private $supportedLocales;
 
     /**
-     * @param array<string> $supportedLocales
+     * @param array<int, string> $supportedLocales
      */
     public function __construct(array $supportedLocales)
     {
@@ -25,19 +25,14 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getSupportedLocales(): array
     {
         return $this->supportedLocales;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return NegotiatedValueInterface|null
-     */
-    public function negotiate(Request $request)
+    public function negotiate(Request $request): ?NegotiatedValueInterface
     {
         if ([] === $this->supportedLocales) {
             return null;
@@ -47,17 +42,17 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
             return null;
         }
 
-        $aggregatedValues = $this->aggregatedValues($request->getHeaderLine('Accept-Language'));
+        $acceptLanguages = $this->acceptLanguages($request->getHeaderLine('Accept-Language'));
 
-        return $this->compareAgainstSupportedLocales($aggregatedValues);
+        return $this->compareAcceptLanguages($acceptLanguages);
     }
 
     /**
      * @param string $header
      *
-     * @return array<string, array>
+     * @return array<string, array<string, string>>
      */
-    private function aggregatedValues(string $header): array
+    private function acceptLanguages(string $header): array
     {
         $values = [];
         foreach (explode(',', $header) as $headerValue) {
@@ -76,71 +71,57 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
             $values[$locale] = $attributes;
         }
 
-        uasort($values, function (array $a, array $b) {
-            return $b['q'] <=> $a['q'];
+        uasort($values, static function (array $valueA, array $valueB) {
+            return $valueB['q'] <=> $valueA['q'];
         });
 
         return $values;
     }
 
     /**
-     * @param array<string, array> $aggregatedValues
+     * @param array<string, array<string, string>> $acceptLanguages
      *
      * @return NegotiatedValueInterface|null
      */
-    private function compareAgainstSupportedLocales(array $aggregatedValues)
+    private function compareAcceptLanguages(array $acceptLanguages): ?NegotiatedValueInterface
     {
-        if (null !== $negotiatedValue = $this->exactCompareAgainstSupportedLocales($aggregatedValues)) {
-            return $negotiatedValue;
-        }
-
-        if (null !== $negotiatedValue = $this->languageCompareAgainstSupportedLocales($aggregatedValues)) {
-            return $negotiatedValue;
-        }
-
-        if (isset($aggregatedValues['*'])) {
-            return new NegotiatedValue(reset($this->supportedLocales), $aggregatedValues['*']);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param array<string, array> $aggregatedValues
-     *
-     * @return NegotiatedValueInterface|null
-     */
-    private function exactCompareAgainstSupportedLocales(array $aggregatedValues)
-    {
-        foreach ($aggregatedValues as $locale => $attributes) {
+        foreach ($acceptLanguages as $locale => $attributes) {
             if (in_array($locale, $this->supportedLocales, true)) {
                 return new NegotiatedValue($locale, $attributes);
             }
         }
 
+        foreach ($acceptLanguages as $locale => $attributes) {
+            if (null !== $negotiatedValue = $this->compareLanguage($locale, $attributes)) {
+                return $negotiatedValue;
+            }
+        }
+
+        if (isset($acceptLanguages['*'])) {
+            return new NegotiatedValue(reset($this->supportedLocales), $acceptLanguages['*']);
+        }
+
         return null;
     }
 
     /**
-     * @param array<string, array> $aggregatedValues
+     * @param string                $locale
+     * @param array<string, string> $attributes
      *
      * @return NegotiatedValueInterface|null
      */
-    private function languageCompareAgainstSupportedLocales(array $aggregatedValues)
+    private function compareLanguage(string $locale, array $attributes): ?NegotiatedValueInterface
     {
-        foreach ($aggregatedValues as $locale => $attributes) {
-            $localeParts = explode('-', $locale);
-            if (2 !== count($localeParts)) {
-                continue;
-            }
-
-            $language = $localeParts[0];
-
-            if (in_array($language, $this->supportedLocales, true)) {
-                return new NegotiatedValue($language, $attributes);
-            }
+        if (1 !== preg_match('#^([^-]+)-([^-]+)$#', $locale, $localeParts)) {
+            return null;
         }
 
-        return null;
+        $language = $localeParts[1];
+
+        if (!in_array($language, $this->supportedLocales, true)) {
+            return null;
+        }
+
+        return new NegotiatedValue($language, $attributes);
     }
 }

@@ -12,12 +12,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
 {
     /**
-     * @var array<string>
+     * @var array<int, string>
      */
     private $supportedMediaTypes;
 
     /**
-     * @param array<string> $supportedMediaTypes
+     * @param array<int, string> $supportedMediaTypes
      */
     public function __construct(array $supportedMediaTypes)
     {
@@ -25,19 +25,14 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getSupportedMediaTypes(): array
     {
         return $this->supportedMediaTypes;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return NegotiatedValueInterface|null
-     */
-    public function negotiate(Request $request)
+    public function negotiate(Request $request): ?NegotiatedValueInterface
     {
         if ([] === $this->supportedMediaTypes) {
             return null;
@@ -47,15 +42,10 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
             return null;
         }
 
-        return $this->compareAgainstSupportedMediaTypes($request->getHeaderLine('Content-Type'));
+        return $this->compareMediaTypes($request->getHeaderLine('Content-Type'));
     }
 
-    /**
-     * @param string $header
-     *
-     * @return NegotiatedValueInterface|null
-     */
-    private function compareAgainstSupportedMediaTypes(string $header)
+    private function compareMediaTypes(string $header): ?NegotiatedValueInterface
     {
         if (false !== strpos($header, ',')) {
             return null;
@@ -73,6 +63,32 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
             return new NegotiatedValue($mediaType, $attributes);
         }
 
+        if (null !== $negotiatedValue = $this->compareMediaTypeWithSuffix($mediaType, $attributes)) {
+            return $negotiatedValue;
+        }
+
         return null;
+    }
+
+    /**
+     * @param string                $mediaType
+     * @param array<string, string> $attributes
+     *
+     * @return NegotiatedValueInterface|null
+     */
+    private function compareMediaTypeWithSuffix(string $mediaType, array $attributes): ?NegotiatedValueInterface
+    {
+        $mediaTypeParts = [];
+        if (1 !== preg_match('#^([^/]+)/([^+]+)\+(.+)$#', $mediaType, $mediaTypeParts)) {
+            return null;
+        }
+
+        $mediaType = $mediaTypeParts[1].'/'.$mediaTypeParts[3];
+
+        if (!in_array($mediaType, $this->supportedMediaTypes, true)) {
+            return null;
+        }
+
+        return new NegotiatedValue($mediaType, $attributes);
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chubbyphp\Tests\Negotiation;
+namespace Chubbyphp\Tests\Negotiation\Unit;
 
 use Chubbyphp\Negotiation\NegotiatedValue;
 use PHPUnit\Framework\TestCase;

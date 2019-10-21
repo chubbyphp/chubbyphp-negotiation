@@ -10,7 +10,7 @@ namespace Chubbyphp\Negotiation;
 interface AcceptNegotiatorInterface extends NegotiatorInterface
 {
     /**
-     * @return string[]
+     * @return array<int, string>
      */
     public function getSupportedMediaTypes(): array;
 }

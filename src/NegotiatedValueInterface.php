@@ -6,13 +6,10 @@ namespace Chubbyphp\Negotiation;
 
 interface NegotiatedValueInterface
 {
-    /**
-     * @return string
-     */
     public function getValue(): string;
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getAttributes(): array;
 }

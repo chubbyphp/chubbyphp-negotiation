@@ -1,7 +1,4 @@
 parameters:
-    level: 7
-    paths:
-        - src
     ignoreErrors:
         -
             message: '/Parameter #1 $str of function trim expects string, string|null given\./'

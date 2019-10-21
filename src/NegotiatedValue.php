@@ -12,13 +12,13 @@ final class NegotiatedValue implements NegotiatedValueInterface
     private $value;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     private $attributes;
 
     /**
-     * @param string $value
-     * @param array  $attributes
+     * @param string                $value
+     * @param array<string, string> $attributes
      */
     public function __construct(string $value, array $attributes = [])
     {
@@ -26,16 +26,13 @@ final class NegotiatedValue implements NegotiatedValueInterface
         $this->attributes = $attributes;
     }
 
-    /**
-     * @return string
-     */
     public function getValue(): string
     {
         return $this->value;
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getAttributes(): array
     {

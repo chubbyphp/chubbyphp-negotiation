@@ -12,12 +12,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 final class AcceptNegotiator implements AcceptNegotiatorInterface
 {
     /**
-     * @var array<string>
+     * @var array<int, string>
      */
     private $supportedMediaTypes;
 
     /**
-     * @param array<string> $supportedMediaTypes
+     * @param array<int, string> $supportedMediaTypes
      */
     public function __construct(array $supportedMediaTypes)
     {
@@ -25,19 +25,14 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getSupportedMediaTypes(): array
     {
         return $this->supportedMediaTypes;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return NegotiatedValueInterface|null
-     */
-    public function negotiate(Request $request)
+    public function negotiate(Request $request): ?NegotiatedValueInterface
     {
         if ([] === $this->supportedMediaTypes) {
             return null;
@@ -47,17 +42,17 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
             return null;
         }
 
-        $aggregatedValues = $this->aggregatedValues($request->getHeaderLine('Accept'));
+        $mediaTypes = $this->mediaTypes($request->getHeaderLine('Accept'));
 
-        return $this->compareAgainstSupportedMediaTypes($aggregatedValues);
+        return $this->compareMediaTypes($mediaTypes);
     }
 
     /**
      * @param string $header
      *
-     * @return array<string, array>
+     * @return array<string, array<string, string>>
      */
-    private function aggregatedValues(string $header): array
+    private function mediaTypes(string $header): array
     {
         $values = [];
         foreach (explode(',', $header) as $headerValue) {
@@ -76,74 +71,83 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
             $values[$mediaType] = $attributes;
         }
 
-        uasort($values, function (array $a, array $b) {
-            return $b['q'] <=> $a['q'];
+        uasort($values, static function (array $valueA, array $valueB) {
+            return $valueB['q'] <=> $valueA['q'];
         });
 
         return $values;
     }
 
     /**
-     * @param array<string, array> $aggregatedValues
+     * @param array<string, array<string, string>> $mediaTypes
      *
      * @return NegotiatedValueInterface|null
      */
-    private function compareAgainstSupportedMediaTypes(array $aggregatedValues)
+    private function compareMediaTypes(array $mediaTypes): ?NegotiatedValueInterface
     {
-        if (null !== $negotiatedValue = $this->exactCompareAgainstSupportedMediaTypes($aggregatedValues)) {
-            return $negotiatedValue;
-        }
-
-        if (null !== $negotiatedValue = $this->typeCompareAgainstSupportedMediaTypes($aggregatedValues)) {
-            return $negotiatedValue;
-        }
-
-        if (isset($aggregatedValues['*/*'])) {
-            return new NegotiatedValue(reset($this->supportedMediaTypes), $aggregatedValues['*/*']);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param array<string, array> $aggregatedValues
-     *
-     * @return NegotiatedValueInterface|null
-     */
-    private function exactCompareAgainstSupportedMediaTypes(array $aggregatedValues)
-    {
-        foreach ($aggregatedValues as $mediaType => $attributes) {
+        foreach ($mediaTypes as $mediaType => $attributes) {
             if (in_array($mediaType, $this->supportedMediaTypes, true)) {
                 return new NegotiatedValue($mediaType, $attributes);
             }
         }
 
+        foreach ($mediaTypes as $mediaType => $attributes) {
+            if (null !== $negotiatedValue = $this->compareMediaTypeWithSuffix($mediaType, $attributes)) {
+                return $negotiatedValue;
+            }
+        }
+
+        foreach ($mediaTypes as $mediaType => $attributes) {
+            if (null !== $negotiatedValue = $this->compareMediaTypeWithTypeOnly($mediaType, $attributes)) {
+                return $negotiatedValue;
+            }
+        }
+
+        if (isset($mediaTypes['*/*'])) {
+            return new NegotiatedValue(reset($this->supportedMediaTypes), $mediaTypes['*/*']);
+        }
+
         return null;
     }
 
     /**
-     * @param array<string, array> $aggregatedValues
+     * @param string                $mediaType
+     * @param array<string, string> $attributes
      *
      * @return NegotiatedValueInterface|null
      */
-    private function typeCompareAgainstSupportedMediaTypes(array $aggregatedValues)
+    private function compareMediaTypeWithSuffix(string $mediaType, array $attributes): ?NegotiatedValueInterface
     {
-        foreach ($aggregatedValues as $mediaType => $attributes) {
-            $mediaTypeParts = explode('/', $mediaType);
-            if (2 !== count($mediaTypeParts)) {
-                continue; // skip invalid value
-            }
+        $mediaTypeParts = [];
+        if (1 !== preg_match('#^([^/+]+)/([^/+]+)\+([^/+]+)$#', $mediaType, $mediaTypeParts)) {
+            return null;
+        }
 
-            list($type, $subType) = $mediaTypeParts;
+        $mediaType = $mediaTypeParts[1].'/'.$mediaTypeParts[3];
 
-            if ('*' === $type || '*' !== $subType) {
-                continue; // skip invalid value
-            }
+        if (!in_array($mediaType, $this->supportedMediaTypes, true)) {
+            return null;
+        }
 
-            foreach ($this->supportedMediaTypes as $supportedMediaType) {
-                if (1 === preg_match('/^'.preg_quote($type).'\/.+$/', $supportedMediaType)) {
-                    return new NegotiatedValue($supportedMediaType, $attributes);
-                }
+        return new NegotiatedValue($mediaType, $attributes);
+    }
+
+    /**
+     * @param string                $mediaType
+     * @param array<string, string> $attributes
+     *
+     * @return NegotiatedValueInterface|null
+     */
+    private function compareMediaTypeWithTypeOnly(string $mediaType, array $attributes): ?NegotiatedValueInterface
+    {
+        $mediaTypeParts = [];
+        if (1 !== preg_match('#^([^/+]+)/\*$#', $mediaType, $mediaTypeParts)) {
+            return null;
+        }
+
+        foreach ($this->supportedMediaTypes as $supportedMediaType) {
+            if (1 === preg_match('/^'.preg_quote($mediaTypeParts[1]).'\/.+$/', $supportedMediaType)) {
+                return new NegotiatedValue($supportedMediaType, $attributes);
             }
         }
 
