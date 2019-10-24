@@ -158,19 +158,19 @@ final class AcceptNegotiatorTest extends TestCase
                 'expectedAccept' => null,
             ],
             [
-                'request' => $this->getRequest('application, application/ld+json ; q=0.7, application/*,application/json ; q=0.8, application/jsonx+xml;q=0.5'),
-                'supportedMediaTypes' => ['application/json'],
-                'expectedAccept' => new NegotiatedValue('application/json', ['q' => '0.8']),
+                'request' => $this->getRequest('application/json ; q=1.0, application/ld+xml; q=0.8, application/ld+json; q=0.3'),
+                'supportedMediaTypes' => ['application/ld+json'],
+                'expectedAccept' => new NegotiatedValue('application/ld+json', ['q' => '0.3']),
             ],
             [
-                'request' => $this->getRequest('application, application/ld+json ; q=0.7, application/json ; q=0.8, application/*,application/jsonx+xml;q=0.5'),
-                'supportedMediaTypes' => ['application/xml'],
-                'expectedAccept' => new NegotiatedValue('application/xml', ['q' => '0.5']),
+                'request' => $this->getRequest('application/json ; q=1.0, application/ld+xml; q=0.8, application/ld+json; q=0.3'),
+                'supportedMediaTypes' => ['application/ld+yaml', 'application/ld+json', 'application/ld+xml'],
+                'expectedAccept' => new NegotiatedValue('application/ld+xml', ['q' => '0.8']),
             ],
             [
-                'request' => $this->getRequest('application/json ; q=0.8, application/*,application/jsonx+xml;q=0.5'),
-                'supportedMediaTypes' => ['application/x-yaml'],
-                'expectedAccept' => new NegotiatedValue('application/x-yaml', ['q' => '1.0']),
+                'request' => $this->getRequest('application/json ; q=1.0, application/ld+xml; q=0.8'),
+                'supportedMediaTypes' => ['application/ld+json'],
+                'expectedAccept' => new NegotiatedValue('application/ld+json', ['q' => '1.0']),
             ],
         ];
     }

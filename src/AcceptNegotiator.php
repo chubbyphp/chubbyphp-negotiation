@@ -17,11 +17,28 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     private $supportedMediaTypes;
 
     /**
+     * @var array<int, string>
+     */
+    private $suffixBasedSupportedMediaTypes;
+
+    /**
      * @param array<int, string> $supportedMediaTypes
      */
     public function __construct(array $supportedMediaTypes)
     {
-        $this->supportedMediaTypes = $supportedMediaTypes;
+        $this->supportedMediaTypes = [];
+        $this->suffixBasedSupportedMediaTypes = [];
+
+        foreach ($supportedMediaTypes as $index => $supportedMediaType) {
+            $this->supportedMediaTypes[$index] = $supportedMediaType;
+
+            $supportedMediaTypeParts = [];
+            if (1 !== preg_match('#^([^/+]+)/([^/+]+)\+([^/+]+)$#', $supportedMediaType, $supportedMediaTypeParts)) {
+                continue;
+            }
+
+            $this->suffixBasedSupportedMediaTypes[$index] = $supportedMediaTypeParts[1].'/'.$supportedMediaTypeParts[3];
+        }
     }
 
     /**
@@ -118,18 +135,11 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
      */
     private function compareMediaTypeWithSuffix(string $mediaType, array $attributes): ?NegotiatedValueInterface
     {
-        $mediaTypeParts = [];
-        if (1 !== preg_match('#^([^/+]+)/([^/+]+)\+([^/+]+)$#', $mediaType, $mediaTypeParts)) {
-            return null;
+        if (false !== $index = array_search($mediaType, $this->suffixBasedSupportedMediaTypes, true)) {
+            return new NegotiatedValue($this->supportedMediaTypes[$index], $attributes);
         }
 
-        $mediaType = $mediaTypeParts[1].'/'.$mediaTypeParts[3];
-
-        if (!in_array($mediaType, $this->supportedMediaTypes, true)) {
-            return null;
-        }
-
-        return new NegotiatedValue($mediaType, $attributes);
+        return null;
     }
 
     /**
