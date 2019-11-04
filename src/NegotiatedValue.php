@@ -17,7 +17,6 @@ final class NegotiatedValue implements NegotiatedValueInterface
     private $attributes;
 
     /**
-     * @param string                $value
      * @param array<string, string> $attributes
      */
     public function __construct(string $value, array $attributes = [])

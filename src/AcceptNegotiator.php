@@ -65,8 +65,6 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     }
 
     /**
-     * @param string $header
-     *
      * @return array<string, array<string, string>>
      */
     private function mediaTypes(string $header): array
@@ -97,8 +95,6 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
 
     /**
      * @param array<string, array<string, string>> $mediaTypes
-     *
-     * @return NegotiatedValueInterface|null
      */
     private function compareMediaTypes(array $mediaTypes): ?NegotiatedValueInterface
     {
@@ -128,10 +124,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     }
 
     /**
-     * @param string                $mediaType
      * @param array<string, string> $attributes
-     *
-     * @return NegotiatedValueInterface|null
      */
     private function compareMediaTypeWithSuffix(string $mediaType, array $attributes): ?NegotiatedValueInterface
     {
@@ -143,10 +136,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     }
 
     /**
-     * @param string                $mediaType
      * @param array<string, string> $attributes
-     *
-     * @return NegotiatedValueInterface|null
      */
     private function compareMediaTypeWithTypeOnly(string $mediaType, array $attributes): ?NegotiatedValueInterface
     {

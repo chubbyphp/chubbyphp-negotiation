@@ -52,10 +52,6 @@ final class AcceptNegotiatorTest extends TestCase
 
     /**
      * @dataProvider getToNegotiateHeaders
-     *
-     * @param ServerRequestInterface $request
-     * @param array                  $supportedMediaTypes
-     * @param NegotiatedValue|null   $expectedAccept
      */
     public function testNegotiate(
         ServerRequestInterface $request,
@@ -175,11 +171,6 @@ final class AcceptNegotiatorTest extends TestCase
         ];
     }
 
-    /**
-     * @param string|null $acceptHeader
-     *
-     * @return ServerRequestInterface
-     */
     private function getRequest(string $acceptHeader = null): ServerRequestInterface
     {
         if (null === $acceptHeader) {

@@ -52,10 +52,6 @@ final class AcceptLanguageNegotiatorTest extends TestCase
 
     /**
      * @dataProvider getToNegotiateHeaders
-     *
-     * @param ServerRequestInterface $request
-     * @param array                  $supportedLocales
-     * @param NegotiatedValue|null   $expectedAcceptLanguage
      */
     public function testNegotiate(
         ServerRequestInterface $request,
@@ -143,11 +139,6 @@ final class AcceptLanguageNegotiatorTest extends TestCase
         ];
     }
 
-    /**
-     * @param string|null $acceptHeader
-     *
-     * @return ServerRequestInterface
-     */
     private function getRequest(string $acceptHeader = null): ServerRequestInterface
     {
         if (null === $acceptHeader) {

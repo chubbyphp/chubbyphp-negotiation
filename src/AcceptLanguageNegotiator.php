@@ -48,8 +48,6 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     }
 
     /**
-     * @param string $header
-     *
      * @return array<string, array<string, string>>
      */
     private function acceptLanguages(string $header): array
@@ -80,8 +78,6 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
 
     /**
      * @param array<string, array<string, string>> $acceptLanguages
-     *
-     * @return NegotiatedValueInterface|null
      */
     private function compareAcceptLanguages(array $acceptLanguages): ?NegotiatedValueInterface
     {
@@ -105,10 +101,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     }
 
     /**
-     * @param string                $locale
      * @param array<string, string> $attributes
-     *
-     * @return NegotiatedValueInterface|null
      */
     private function compareLanguage(string $locale, array $attributes): ?NegotiatedValueInterface
     {

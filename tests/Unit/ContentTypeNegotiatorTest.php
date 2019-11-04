@@ -52,10 +52,6 @@ final class ContentTypeNegotiatorTest extends TestCase
 
     /**
      * @dataProvider getToNegotiateHeaders
-     *
-     * @param ServerRequestInterface $request
-     * @param array                  $supportedMediaTypes
-     * @param NegotiatedValue|null   $expectedContentType
      */
     public function testNegotiate(
         ServerRequestInterface $request,
@@ -103,11 +99,6 @@ final class ContentTypeNegotiatorTest extends TestCase
         ];
     }
 
-    /**
-     * @param string|null $contentType
-     *
-     * @return ServerRequestInterface
-     */
     private function getRequest(string $contentType = null): ServerRequestInterface
     {
         if (null === $contentType) {

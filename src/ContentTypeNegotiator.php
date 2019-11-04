@@ -71,10 +71,7 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
     }
 
     /**
-     * @param string                $mediaType
      * @param array<string, string> $attributes
-     *
-     * @return NegotiatedValueInterface|null
      */
     private function compareMediaTypeWithSuffix(string $mediaType, array $attributes): ?NegotiatedValueInterface
     {
