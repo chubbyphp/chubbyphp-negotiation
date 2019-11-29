@@ -79,6 +79,30 @@ $value->getValue(); // application/xml
 $value->getAttributes(); // ['charset' => 'UTF-8']
 ```
 
+### NegotiationServiceFactory
+
+```php
+<?php
+
+use Chubbyphp\Container\Container;
+use Chubbyphp\Negotiation\ServiceFactory\NegotiationServiceFactory;
+use Psr\Http\Message\ServerRequestInterface;
+
+$container = new Container();
+$container->factories((new NegotiationServiceFactory())());
+
+$request = ...;
+
+$container->get('negotiator.acceptNegotiator')
+    ->negotiate($request);
+
+$container->get('negotiator.acceptNegotiator')
+    ->negotiate($request);
+
+$container->get('negotiator.contentTypeNegotiator')
+    ->negotiate($request);
+```
+
 ### NegotiationServiceProvider
 
 ```php
