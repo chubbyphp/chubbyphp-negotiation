@@ -58,7 +58,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
             $locale = trim(array_shift($headerValueParts));
             $attributes = [];
             foreach ($headerValueParts as $attribute) {
-                list($attributeKey, $attributeValue) = explode('=', $attribute);
+                [$attributeKey, $attributeValue] = explode('=', $attribute);
                 $attributes[trim($attributeKey)] = trim($attributeValue);
             }
 

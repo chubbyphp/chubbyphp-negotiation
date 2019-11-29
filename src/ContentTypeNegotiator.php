@@ -55,7 +55,7 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
         $mediaType = trim(array_shift($headerValueParts));
         $attributes = [];
         foreach ($headerValueParts as $attribute) {
-            list($attributeKey, $attributeValue) = explode('=', $attribute);
+            [$attributeKey, $attributeValue] = explode('=', $attribute);
             $attributes[trim($attributeKey)] = trim($attributeValue);
         }
 
