@@ -18,6 +18,7 @@ A simple negotiation library.
 
 ## Suggest
 
+ * chubbyphp/chubbyphp-container: ^1.0
  * pimple/pimple: ^3.2.3
 
 ## Installation
@@ -25,7 +26,7 @@ A simple negotiation library.
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-negotiation][1].
 
 ```sh
-composer require chubbyphp/chubbyphp-negotiation "^1.4"
+composer require chubbyphp/chubbyphp-negotiation "^1.5"
 ```
 
 ## Usage
@@ -78,17 +79,17 @@ $value->getValue(); // application/xml
 $value->getAttributes(); // ['charset' => 'UTF-8']
 ```
 
-### NegotiationProvider
+### NegotiationServiceProvider
 
 ```php
 <?php
 
-use Chubbyphp\Negotiation\Provider\NegotiationProvider;
+use Chubbyphp\Negotiation\ServiceProvider\NegotiationServiceProvider;
 use Pimple\Container;
 use Psr\Http\Message\ServerRequestInterface;
 
 $container = new Container();
-$container->register(new NegotiationProvider);
+$container->register(new NegotiationServiceProvider);
 
 $request = ...;
 
