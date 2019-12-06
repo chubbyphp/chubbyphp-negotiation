@@ -8,6 +8,9 @@ use Chubbyphp\Negotiation\ServiceProvider\NegotiationServiceProvider;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
+/**
+ * @deprecated use \Chubbyphp\Negotiation\ServiceProvider\NegotiationServiceProvider
+ */
 final class NegotiationProvider implements ServiceProviderInterface
 {
     /**
@@ -17,6 +20,11 @@ final class NegotiationProvider implements ServiceProviderInterface
 
     public function __construct()
     {
+        @trigger_error(
+            sprintf('Use "%s" instead.', NegotiationServiceProvider::class),
+            E_USER_DEPRECATED
+        );
+
         $this->serviceProvider = new NegotiationServiceProvider();
     }
 

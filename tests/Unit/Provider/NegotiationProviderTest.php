@@ -18,6 +18,23 @@ use Pimple\Container;
  */
 final class NegotiationProviderTest extends TestCase
 {
+    public function testAdapter(): void
+    {
+        error_clear_last();
+
+        new NegotiationProvider();
+
+        $error = error_get_last();
+
+        self::assertNotNull($error);
+
+        self::assertSame(E_USER_DEPRECATED, $error['type']);
+        self::assertSame(
+            'Use "Chubbyphp\Negotiation\ServiceProvider\NegotiationServiceProvider" instead.',
+            $error['message']
+        );
+    }
+
     public function testRegister(): void
     {
         $container = new Container();
