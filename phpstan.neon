@@ -1,17 +1,8 @@
 parameters:
     ignoreErrors:
         -
-            message: '/Parameter #1 $str of function trim expects string, string|null given\./'
+            message: '/Parameter \#1 \$value of class Chubbyphp\\Negotiation\\NegotiatedValue constructor expects string, string\|false given\./'
             path: %currentWorkingDirectory%/src/AcceptLanguageNegotiator.php
         -
-            message: '/Parameter #1 $value of class Chubbyphp\Negotiation\NegotiatedValue constructor expects string, string|false given\./'
-            path: %currentWorkingDirectory%/src/AcceptLanguageNegotiator.php
-        -
-            message: '/Parameter #1 $str of function trim expects string, string|null given\./'
+            message: '/Parameter \#1 \$value of class Chubbyphp\\Negotiation\\NegotiatedValue constructor expects string, string\|false given\./'
             path: %currentWorkingDirectory%/src/AcceptNegotiator.php
-        -
-            message: '/Parameter #1 $value of class Chubbyphp\Negotiation\NegotiatedValue constructor expects string, string|false given\./'
-            path: %currentWorkingDirectory%/src/AcceptNegotiator.php
-        -
-            message: '/Parameter #1 $str of function trim expects string, string|null given\./'
-            path: %currentWorkingDirectory%/src/ContentTypeNegotiator.php
