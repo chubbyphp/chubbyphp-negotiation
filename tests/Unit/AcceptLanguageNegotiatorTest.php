@@ -136,6 +136,16 @@ final class AcceptLanguageNegotiatorTest extends TestCase
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
+            [ // invalid header - semicolon without qvalue key pair
+                'request' => $this->getRequest('de;'),
+                'supportedMediaTypes' => ['de'],
+                'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
+            ],
+            [ // invalid header - semicolon with qvalue key only
+                'request' => $this->getRequest('de;q'),
+                'supportedMediaTypes' => ['de'],
+                'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
+            ],
         ];
     }
 
