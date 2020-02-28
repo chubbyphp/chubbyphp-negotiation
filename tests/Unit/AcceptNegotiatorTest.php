@@ -168,6 +168,16 @@ final class AcceptNegotiatorTest extends TestCase
                 'supportedMediaTypes' => ['application/ld+json'],
                 'expectedAccept' => new NegotiatedValue('application/ld+json', ['q' => '1.0']),
             ],
+            [ // invalid header - semicolon without qvalue key pair
+                'request' => $this->getRequest('application/json;'),
+                'supportedMediaTypes' => ['application/json'],
+                'expectedAccept' => new NegotiatedValue('application/json', ['q' => '1.0']),
+            ],
+            [ // invalid header - semicolon with qvalue key only
+                'request' => $this->getRequest('application/json;q'),
+                'supportedMediaTypes' => ['application/json'],
+                'expectedAccept' => new NegotiatedValue('application/json', ['q' => '1.0']),
+            ],
         ];
     }
 
