@@ -2,10 +2,10 @@
 
 [![Build Status](https://api.travis-ci.org/chubbyphp/chubbyphp-negotiation.png?branch=master)](https://travis-ci.org/chubbyphp/chubbyphp-negotiation)
 [![Coverage Status](https://coveralls.io/repos/github/chubbyphp/chubbyphp-negotiation/badge.svg?branch=master)](https://coveralls.io/github/chubbyphp/chubbyphp-negotiation?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-negotiation/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-negotiation)
 [![Total Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-negotiation/downloads.png)](https://packagist.org/packages/chubbyphp/chubbyphp-negotiation)
 [![Monthly Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-negotiation/d/monthly)](https://packagist.org/packages/chubbyphp/chubbyphp-negotiation)
-[![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-negotiation/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-negotiation)
-[![Latest Unstable Version](https://poser.pugx.org/chubbyphp/chubbyphp-negotiation/v/unstable)](https://packagist.org/packages/chubbyphp/chubbyphp-negotiation)
+[![Daily Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-negotiation/d/daily)](https://packagist.org/packages/chubbyphp/chubbyphp-negotiation)
 
 ## Description
 
