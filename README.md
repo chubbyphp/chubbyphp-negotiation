@@ -26,7 +26,7 @@ A simple negotiation library.
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-negotiation][1].
 
 ```sh
-composer require chubbyphp/chubbyphp-negotiation "^1.5"
+composer require chubbyphp/chubbyphp-negotiation "^1.6"
 ```
 
 ## Usage
@@ -78,6 +78,12 @@ $value = $negotiator->negotiate($request); // NegotiatedValue
 $value->getValue(); // application/xml
 $value->getAttributes(); // ['charset' => 'UTF-8']
 ```
+
+### Container
+
+ * [AcceptLanguageNegotiatorFactory][2]
+ * [AcceptNegotiatorFactory][3]
+ * [ContentTypeNegotiatorFactory][4]
 
 ### NegotiationServiceFactory
 
@@ -132,3 +138,7 @@ $container['negotiator.contentTypeNegotiator']
 Dominik Zogg 2020
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-negotiation
+
+[2]: doc/Container/AcceptLanguageNegotiatorFactory.md
+[3]: doc/Container/AcceptNegotiatorFactory.md
+[4]: doc/Container/ContentTypeNegotiatorFactory.md
