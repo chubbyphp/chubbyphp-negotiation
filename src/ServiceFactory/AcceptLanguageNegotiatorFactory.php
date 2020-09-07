@@ -2,21 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Chubbyphp\Negotiation\Container;
+namespace Chubbyphp\Negotiation\ServiceFactory;
 
+use Chubbyphp\Laminas\Config\Factory\AbstractFactory;
 use Chubbyphp\Negotiation\AcceptLanguageNegotiator;
 use Chubbyphp\Negotiation\AcceptLanguageNegotiatorInterface;
 use Psr\Container\ContainerInterface;
 
-/**
- * @deprecated Chubbyphp\Negotiation\ServiceFactory\AcceptLanguageNegotiatorFactory
- */
-final class AcceptLanguageNegotiatorFactory
+final class AcceptLanguageNegotiatorFactory extends AbstractFactory
 {
     public function __invoke(ContainerInterface $container): AcceptLanguageNegotiatorInterface
     {
         return new AcceptLanguageNegotiator(
-            $container->get(AcceptLanguageNegotiatorInterface::class.'supportedLocales[]')
+            $container->get(AcceptLanguageNegotiatorInterface::class.'supportedLocales[]'.$this->name)
         );
     }
 }
