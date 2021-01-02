@@ -14,28 +14,16 @@ final class NegotiationServiceProvider implements ServiceProviderInterface
 {
     public function register(Container $container): void
     {
-        $container['negotiator.acceptNegotiator'] = static function () use ($container) {
-            return new AcceptNegotiator($container['negotiator.acceptNegotiator.values']);
-        };
+        $container['negotiator.acceptNegotiator'] = static fn () => new AcceptNegotiator($container['negotiator.acceptNegotiator.values']);
 
-        $container['negotiator.acceptLanguageNegotiator'] = static function () use ($container) {
-            return new AcceptLanguageNegotiator($container['negotiator.acceptLanguageNegotiator.values']);
-        };
+        $container['negotiator.acceptLanguageNegotiator'] = static fn () => new AcceptLanguageNegotiator($container['negotiator.acceptLanguageNegotiator.values']);
 
-        $container['negotiator.contentTypeNegotiator'] = static function () use ($container) {
-            return new ContentTypeNegotiator($container['negotiator.contentTypeNegotiator.values']);
-        };
+        $container['negotiator.contentTypeNegotiator'] = static fn () => new ContentTypeNegotiator($container['negotiator.contentTypeNegotiator.values']);
 
-        $container['negotiator.acceptNegotiator.values'] = static function () {
-            return [];
-        };
+        $container['negotiator.acceptNegotiator.values'] = static fn () => [];
 
-        $container['negotiator.acceptLanguageNegotiator.values'] = static function () {
-            return [];
-        };
+        $container['negotiator.acceptLanguageNegotiator.values'] = static fn () => [];
 
-        $container['negotiator.contentTypeNegotiator.values'] = static function () {
-            return [];
-        };
+        $container['negotiator.contentTypeNegotiator.values'] = static fn () => [];
     }
 }

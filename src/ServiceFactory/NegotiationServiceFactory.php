@@ -17,24 +17,12 @@ final class NegotiationServiceFactory
     public function __invoke(): array
     {
         return [
-            'negotiator.acceptNegotiator' => static function (ContainerInterface $container) {
-                return new AcceptNegotiator($container->get('negotiator.acceptNegotiator.values'));
-            },
-            'negotiator.acceptLanguageNegotiator' => static function (ContainerInterface $container) {
-                return new AcceptLanguageNegotiator($container->get('negotiator.acceptLanguageNegotiator.values'));
-            },
-            'negotiator.contentTypeNegotiator' => static function (ContainerInterface $container) {
-                return new ContentTypeNegotiator($container->get('negotiator.contentTypeNegotiator.values'));
-            },
-            'negotiator.acceptNegotiator.values' => static function () {
-                return [];
-            },
-            'negotiator.acceptLanguageNegotiator.values' => static function () {
-                return [];
-            },
-            'negotiator.contentTypeNegotiator.values' => static function () {
-                return [];
-            },
+            'negotiator.acceptNegotiator' => static fn (ContainerInterface $container) => new AcceptNegotiator($container->get('negotiator.acceptNegotiator.values')),
+            'negotiator.acceptLanguageNegotiator' => static fn (ContainerInterface $container) => new AcceptLanguageNegotiator($container->get('negotiator.acceptLanguageNegotiator.values')),
+            'negotiator.contentTypeNegotiator' => static fn (ContainerInterface $container) => new ContentTypeNegotiator($container->get('negotiator.contentTypeNegotiator.values')),
+            'negotiator.acceptNegotiator.values' => static fn () => [],
+            'negotiator.acceptLanguageNegotiator.values' => static fn () => [],
+            'negotiator.contentTypeNegotiator.values' => static fn () => [],
         ];
     }
 }

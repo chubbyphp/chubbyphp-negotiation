@@ -13,10 +13,7 @@ use Pimple\ServiceProviderInterface;
  */
 final class NegotiationProvider implements ServiceProviderInterface
 {
-    /**
-     * @var NegotiationServiceProvider
-     */
-    private $serviceProvider;
+    private NegotiationServiceProvider $serviceProvider;
 
     public function __construct()
     {

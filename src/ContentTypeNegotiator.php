@@ -14,7 +14,7 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
     /**
      * @var array<int, string>
      */
-    private $supportedMediaTypes;
+    private array $supportedMediaTypes;
 
     /**
      * @param array<int, string> $supportedMediaTypes

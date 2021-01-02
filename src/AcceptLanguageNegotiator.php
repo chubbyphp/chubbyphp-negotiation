@@ -14,7 +14,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     /**
      * @var array<int, string>
      */
-    private $supportedLocales;
+    private array $supportedLocales;
 
     /**
      * @param array<int, string> $supportedLocales
@@ -72,9 +72,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
             $values[$locale] = $attributes;
         }
 
-        uasort($values, static function (array $valueA, array $valueB) {
-            return $valueB['q'] <=> $valueA['q'];
-        });
+        uasort($values, static fn (array $valueA, array $valueB) => $valueB['q'] <=> $valueA['q']);
 
         return $values;
     }

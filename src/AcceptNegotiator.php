@@ -14,12 +14,12 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     /**
      * @var array<int, string>
      */
-    private $supportedMediaTypes;
+    private array $supportedMediaTypes;
 
     /**
      * @var array<int, string>
      */
-    private $suffixBasedSupportedMediaTypes;
+    private array $suffixBasedSupportedMediaTypes;
 
     /**
      * @param array<int, string> $supportedMediaTypes
@@ -89,9 +89,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
             $values[$mediaType] = $attributes;
         }
 
-        uasort($values, static function (array $valueA, array $valueB) {
-            return $valueB['q'] <=> $valueA['q'];
-        });
+        uasort($values, static fn (array $valueA, array $valueB) => $valueB['q'] <=> $valueA['q']);
 
         return $values;
     }
