@@ -100,7 +100,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     private function compareMediaTypes(array $mediaTypes): ?NegotiatedValueInterface
     {
         foreach ($mediaTypes as $mediaType => $attributes) {
-            if (in_array($mediaType, $this->supportedMediaTypes, true)) {
+            if (\in_array($mediaType, $this->supportedMediaTypes, true)) {
                 return new NegotiatedValue($mediaType, $attributes);
             }
         }

@@ -32,7 +32,7 @@ final class AcceptLanguageNegotiatorTest extends TestCase
     {
         $negotiator = new AcceptLanguageNegotiator([]);
 
-        /** @var ServerRequestInterface|MockObject $request */
+        /** @var MockObject|ServerRequestInterface $request */
         $request = $this->getMockByCalls(ServerRequestInterface::class);
 
         self::assertNull($negotiator->negotiate($request));
@@ -42,7 +42,7 @@ final class AcceptLanguageNegotiatorTest extends TestCase
     {
         $negotiator = new AcceptLanguageNegotiator(['en']);
 
-        /** @var ServerRequestInterface|MockObject $request */
+        /** @var MockObject|ServerRequestInterface $request */
         $request = $this->getMockByCalls(ServerRequestInterface::class, [
             Call::create('hasHeader')->with('Accept-Language')->willReturn(false),
         ]);
@@ -56,7 +56,7 @@ final class AcceptLanguageNegotiatorTest extends TestCase
     public function testNegotiate(
         ServerRequestInterface $request,
         array $supportedLocales,
-        NegotiatedValue $expectedAcceptLanguage = null
+        ?NegotiatedValue $expectedAcceptLanguage = null
     ): void {
         $negotiator = new AcceptLanguageNegotiator($supportedLocales);
 
@@ -149,7 +149,7 @@ final class AcceptLanguageNegotiatorTest extends TestCase
         ];
     }
 
-    private function getRequest(string $acceptHeader = null): ServerRequestInterface
+    private function getRequest(?string $acceptHeader = null): ServerRequestInterface
     {
         if (null === $acceptHeader) {
             return $this->getMockByCalls(ServerRequestInterface::class, [

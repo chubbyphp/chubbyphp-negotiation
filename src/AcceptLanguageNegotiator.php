@@ -83,7 +83,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     private function compareAcceptLanguages(array $acceptLanguages): ?NegotiatedValueInterface
     {
         foreach ($acceptLanguages as $locale => $attributes) {
-            if (in_array($locale, $this->supportedLocales, true)) {
+            if (\in_array($locale, $this->supportedLocales, true)) {
                 return new NegotiatedValue($locale, $attributes);
             }
         }
@@ -112,7 +112,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
 
         $language = $localeParts[1];
 
-        if (!in_array($language, $this->supportedLocales, true)) {
+        if (!\in_array($language, $this->supportedLocales, true)) {
             return null;
         }
 

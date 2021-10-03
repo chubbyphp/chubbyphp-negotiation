@@ -59,7 +59,7 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
             $attributes[trim($attributeKey)] = trim($attributeValue);
         }
 
-        if (in_array($mediaType, $this->supportedMediaTypes, true)) {
+        if (\in_array($mediaType, $this->supportedMediaTypes, true)) {
             return new NegotiatedValue($mediaType, $attributes);
         }
 
@@ -82,7 +82,7 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
 
         $mediaType = $mediaTypeParts[1].'/'.$mediaTypeParts[3];
 
-        if (!in_array($mediaType, $this->supportedMediaTypes, true)) {
+        if (!\in_array($mediaType, $this->supportedMediaTypes, true)) {
             return null;
         }
 

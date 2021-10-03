@@ -32,7 +32,7 @@ final class ContentTypeNegotiatorTest extends TestCase
     {
         $negotiator = new ContentTypeNegotiator([]);
 
-        /** @var ServerRequestInterface|MockObject $request */
+        /** @var MockObject|ServerRequestInterface $request */
         $request = $this->getMockByCalls(ServerRequestInterface::class);
 
         self::assertNull($negotiator->negotiate($request));
@@ -42,7 +42,7 @@ final class ContentTypeNegotiatorTest extends TestCase
     {
         $negotiator = new ContentTypeNegotiator(['application/json']);
 
-        /** @var ServerRequestInterface|MockObject $request */
+        /** @var MockObject|ServerRequestInterface $request */
         $request = $this->getMockByCalls(ServerRequestInterface::class, [
             Call::create('hasHeader')->with('Content-Type')->willReturn(false),
         ]);
@@ -56,7 +56,7 @@ final class ContentTypeNegotiatorTest extends TestCase
     public function testNegotiate(
         ServerRequestInterface $request,
         array $supportedMediaTypes,
-        NegotiatedValue $expectedContentType = null
+        ?NegotiatedValue $expectedContentType = null
     ): void {
         $negotiator = new ContentTypeNegotiator($supportedMediaTypes);
 
@@ -99,7 +99,7 @@ final class ContentTypeNegotiatorTest extends TestCase
         ];
     }
 
-    private function getRequest(string $contentType = null): ServerRequestInterface
+    private function getRequest(?string $contentType = null): ServerRequestInterface
     {
         if (null === $contentType) {
             return $this->getMockByCalls(ServerRequestInterface::class, [

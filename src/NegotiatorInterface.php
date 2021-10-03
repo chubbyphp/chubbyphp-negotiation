@@ -8,8 +8,5 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 interface NegotiatorInterface
 {
-    /**
-     * @return NegotiatedValueInterface|null
-     */
-    public function negotiate(Request $request);
+    public function negotiate(Request $request): ?NegotiatedValueInterface;
 }
