@@ -76,7 +76,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
 
             $attributes = [];
             foreach ($headerValueParts as $attribute) {
-                if (false !== strpos($attribute, '=')) {
+                if (str_contains($attribute, '=')) {
                     [$attributeKey, $attributeValue] = explode('=', $attribute);
                     $attributes[trim($attributeKey)] = trim($attributeValue);
                 }
@@ -147,7 +147,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
         }
 
         foreach ($this->supportedMediaTypes as $supportedMediaType) {
-            if (1 === preg_match('/^'.preg_quote($mediaTypeParts[1]).'\/.+$/', $supportedMediaType)) {
+            if (1 === preg_match('/^'.preg_quote($mediaTypeParts[1], '/').'\/.+$/', $supportedMediaType)) {
                 return new NegotiatedValue($supportedMediaType, $attributes);
             }
         }

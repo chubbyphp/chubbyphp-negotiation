@@ -12,16 +12,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterface
 {
     /**
-     * @var array<int, string>
-     */
-    private array $supportedLocales;
-
-    /**
      * @param array<int, string> $supportedLocales
      */
-    public function __construct(array $supportedLocales)
+    public function __construct(private array $supportedLocales)
     {
-        $this->supportedLocales = $supportedLocales;
     }
 
     /**
@@ -59,7 +53,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
 
             $attributes = [];
             foreach ($headerValueParts as $attribute) {
-                if (false !== strpos($attribute, '=')) {
+                if (str_contains($attribute, '=')) {
                     [$attributeKey, $attributeValue] = explode('=', $attribute);
                     $attributes[trim($attributeKey)] = trim($attributeValue);
                 }

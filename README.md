@@ -31,15 +31,15 @@ A simple negotiation library.
 
 ## Suggest
 
- * chubbyphp/chubbyphp-container: ^1.0
- * pimple/pimple: ^3.3
+ * chubbyphp/chubbyphp-container: ^2.1
+ * pimple/pimple: ^3.5
 
 ## Installation
 
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-negotiation][1].
 
 ```sh
-composer require chubbyphp/chubbyphp-negotiation "^1.8"
+composer require chubbyphp/chubbyphp-negotiation "^1.9"
 ```
 
 ## Usage
@@ -148,7 +148,7 @@ $container['negotiator.contentTypeNegotiator']
 
 ## Copyright
 
-Dominik Zogg 2021
+Dominik Zogg 2022
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-negotiation
 

@@ -6,20 +6,11 @@ namespace Chubbyphp\Negotiation;
 
 final class NegotiatedValue implements NegotiatedValueInterface
 {
-    private string $value;
-
-    /**
-     * @var array<string, string>
-     */
-    private array $attributes;
-
     /**
      * @param array<string, string> $attributes
      */
-    public function __construct(string $value, array $attributes = [])
+    public function __construct(private string $value, private array $attributes = [])
     {
-        $this->value = $value;
-        $this->attributes = $attributes;
     }
 
     public function getValue(): string
