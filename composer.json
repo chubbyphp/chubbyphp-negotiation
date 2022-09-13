@@ -1,7 +1,10 @@
 {
     "name": "chubbyphp/chubbyphp-negotiation",
     "description": "Chubbyphp Negotiation",
-    "keywords": ["chubbyphp", "negotiation"],
+    "keywords": [
+        "chubbyphp",
+        "negotiation"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -27,10 +30,14 @@
         "pimple/pimple": "^3.5"
     },
     "autoload": {
-        "psr-4": { "Chubbyphp\\Negotiation\\": "src/" }
+        "psr-4": {
+            "Chubbyphp\\Negotiation\\": "src/"
+        }
     },
     "autoload-dev": {
-        "psr-4": { "Chubbyphp\\Tests\\Negotiation\\": "tests/" }
+        "psr-4": {
+            "Chubbyphp\\Tests\\Negotiation\\": "tests/"
+        }
     },
     "config": {
         "sort-packages": true,
@@ -56,7 +63,7 @@
             "@test:cs"
         ],
         "test:cs": "mkdir -p build && PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --cache-file=build/phpcs.cache",
-        "test:infection": "vendor/bin/infection --threads=$(nproc) --min-msi=97 --verbose --coverage=build/phpunit",
+        "test:infection": "vendor/bin/infection --threads=$(nproc) --min-msi=96 --verbose --coverage=build/phpunit",
         "test:integration": "vendor/bin/phpunit --testsuite=Integration --cache-result-file=build/phpunit/result.cache",
         "test:lint": "mkdir -p build && find src tests -name '*.php' -print0 | xargs -0 -n1 -P$(nproc) php -l | tee build/phplint.log",
         "test:loc": "mkdir -p build && vendor/bin/phploc src | tee build/phploc.log",
