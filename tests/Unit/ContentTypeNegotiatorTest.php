@@ -51,7 +51,7 @@ final class ContentTypeNegotiatorTest extends TestCase
     }
 
     /**
-     * @dataProvider getToNegotiateHeaders
+     * @dataProvider provideNegotiateCases
      */
     public function testNegotiate(
         ServerRequestInterface $request,
@@ -63,7 +63,7 @@ final class ContentTypeNegotiatorTest extends TestCase
         self::assertEquals($expectedContentType, $negotiator->negotiate($request));
     }
 
-    public function getToNegotiateHeaders(): array
+    public function provideNegotiateCases(): iterable
     {
         return [
             [

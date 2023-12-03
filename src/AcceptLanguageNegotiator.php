@@ -14,9 +14,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     /**
      * @param array<int, string> $supportedLocales
      */
-    public function __construct(private array $supportedLocales)
-    {
-    }
+    public function __construct(private array $supportedLocales) {}
 
     /**
      * @return array<int, string>

@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/chubbyphp/chubbyphp-negotiation/workflows/CI/badge.svg?branch=master)](https://github.com/chubbyphp/chubbyphp-negotiation/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/github/chubbyphp/chubbyphp-negotiation/badge.svg?branch=master)](https://coveralls.io/github/chubbyphp/chubbyphp-negotiation?branch=master)
-[![Infection MSI](https://badge.stryker-mutator.io/github.com/chubbyphp/chubbyphp-negotiation/master)](https://dashboard.stryker-mutator.io/reports/github.com/chubbyphp/chubbyphp-negotiation/master)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fchubbyphp%2Fchubbyphp-negotiation%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/chubbyphp/chubbyphp-negotiation/master)[![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-negotiation/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-negotiation)
 [![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-negotiation/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-negotiation)
 [![Total Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-negotiation/downloads.png)](https://packagist.org/packages/chubbyphp/chubbyphp-negotiation)
 [![Monthly Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-negotiation/d/monthly)](https://packagist.org/packages/chubbyphp/chubbyphp-negotiation)
@@ -26,12 +26,12 @@ A simple negotiation library.
 
 ## Requirements
 
- * php: ^7.4|^8.0
- * psr/http-message: ^1.0
+ * php: ^8.1
+ * psr/http-message: ^1.1|^2.0
 
 ## Suggest
 
- * chubbyphp/chubbyphp-container: ^2.1
+ * chubbyphp/chubbyphp-container: ^2.2
  * pimple/pimple: ^3.5
 
 ## Installation
@@ -39,7 +39,7 @@ A simple negotiation library.
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-negotiation][1].
 
 ```sh
-composer require chubbyphp/chubbyphp-negotiation "^1.9"
+composer require chubbyphp/chubbyphp-negotiation "^2.0"
 ```
 
 ## Usage

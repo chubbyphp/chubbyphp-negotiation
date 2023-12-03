@@ -51,7 +51,7 @@ final class AcceptNegotiatorTest extends TestCase
     }
 
     /**
-     * @dataProvider getToNegotiateHeaders
+     * @dataProvider provideNegotiateCases
      */
     public function testNegotiate(
         ServerRequestInterface $request,
@@ -63,7 +63,7 @@ final class AcceptNegotiatorTest extends TestCase
         self::assertEquals($expectedAccept, $negotiator->negotiate($request));
     }
 
-    public function getToNegotiateHeaders(): array
+    public function provideNegotiateCases(): iterable
     {
         return [
             [
