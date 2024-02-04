@@ -27,7 +27,9 @@ A simple negotiation library.
 ## Requirements
 
  * php: ^8.1
+ * chubbyphp/chubbyphp-http-exception: ^1.1
  * psr/http-message: ^1.1|^2.0
+ * psr/http-server-middleware: ^1.0
 
 ## Suggest
 
@@ -39,7 +41,7 @@ A simple negotiation library.
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-negotiation][1].
 
 ```sh
-composer require chubbyphp/chubbyphp-negotiation "^2.0"
+composer require chubbyphp/chubbyphp-negotiation "^2.1"
 ```
 
 ## Usage
@@ -60,6 +62,20 @@ $value->getValue(); // de
 $value->getAttributes(); // ['q' => '1.0']
 ```
 
+### AcceptLanguageMiddleware
+
+```php
+<?php
+
+use Chubbyphp\Negotiation\Middleware\AcceptLanguageMiddleware;
+
+$request = ...;
+$request->withHeader('Accept-Language', 'de,en-US;q=0.7,en;q=0.3');
+
+$middleware = new AcceptLanguageMiddleware($acceptLanguageNegotiator);
+$response = $negotiator->process($request, $handler);
+```
+
 ### AcceptNegotiator
 
 ```php
@@ -76,6 +92,20 @@ $value->getValue(); // application/xml
 $value->getAttributes(); // ['q' => '0.9']
 ```
 
+### AcceptMiddleware
+
+```php
+<?php
+
+use Chubbyphp\Negotiation\Middleware\AcceptMiddleware;
+
+$request = ...;
+$request->withHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q =0.8');
+
+$middleware = new AcceptMiddleware($acceptNegotiator);
+$response = $negotiator->process($request, $handler);
+```
+
 ### ContentTypeNegotiator
 
 ```php
@@ -90,6 +120,20 @@ $negotiator = new ContentTypeNegotiator(['application/json', 'application/xml', 
 $value = $negotiator->negotiate($request); // NegotiatedValue
 $value->getValue(); // application/xml
 $value->getAttributes(); // ['charset' => 'UTF-8']
+```
+
+### ContentTypeMiddleware
+
+```php
+<?php
+
+use Chubbyphp\Negotiation\Middleware\ContentTypeMiddleware;
+
+$request = ...;
+$request->withHeader('Content-Type', 'application/xml; charset=UTF-8');
+
+$middleware = new ContentTypeMiddleware($contentTypeNegotiator);
+$response = $negotiator->process($request, $handler);
 ```
 
 ### NegotiationServiceFactory
@@ -109,11 +153,20 @@ $request = ...;
 $container->get('negotiator.acceptNegotiator')
     ->negotiate($request);
 
-$container->get('negotiator.acceptNegotiator')
+$container->get('negotiator.acceptMiddleware')
+    ->process($request, $handler);
+
+$container->get('negotiator.acceptLanguageNegotiator')
     ->negotiate($request);
+
+$container->get('negotiator.acceptLanguageMiddleware')
+    ->process($request, $handler);
 
 $container->get('negotiator.contentTypeNegotiator')
     ->negotiate($request);
+
+$container->get('negotiator.contentTypeMiddleware')
+    ->process($request, $handler);
 ```
 
 ### NegotiationServiceProvider
@@ -133,18 +186,30 @@ $request = ...;
 $container['negotiator.acceptNegotiator']
     ->negotiate($request);
 
-$container['negotiator.acceptNegotiator']
+$container['negotiator.acceptMiddleware']
+    ->process($request, $handler);
+
+$container['negotiator.acceptLanguageNegotiator']
     ->negotiate($request);
+
+$container['negotiator.acceptLanguageMiddleware']
+    ->process($request, $handler);
 
 $container['negotiator.contentTypeNegotiator']
     ->negotiate($request);
+
+$container['negotiator.contentTypeMiddleware']
+    ->process($request, $handler);
 ```
 
 ### ServiceFactory
 
- * [AcceptLanguageNegotiatorFactory][2]
- * [AcceptNegotiatorFactory][3]
- * [ContentTypeNegotiatorFactory][4]
+ * [AcceptLanguageMiddlewareFactory][2]
+ * [AcceptLanguageNegotiatorFactory][3]
+ * [AcceptMiddlewareFactory][4]
+ * [AcceptNegotiatorFactory][5]
+ * [ContentTypeMiddlewareFactory][6]
+ * [ContentTypeNegotiatorFactory][7]
 
 ## Copyright
 
@@ -152,6 +217,9 @@ $container['negotiator.contentTypeNegotiator']
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-negotiation
 
-[2]: doc/ServiceFactory/AcceptLanguageNegotiatorFactory.md
-[3]: doc/ServiceFactory/AcceptNegotiatorFactory.md
-[4]: doc/ServiceFactory/ContentTypeNegotiatorFactory.md
+[2]: doc/ServiceFactory/AcceptLanguageMiddlewareFactory.md
+[3]: doc/ServiceFactory/AcceptLanguageNegotiatorFactory.md
+[4]: doc/ServiceFactory/AcceptMiddlewareFactory.md
+[5]: doc/ServiceFactory/AcceptNegotiatorFactory.md
+[6]: doc/ServiceFactory/ContentTypeMiddlewareFactory.md
+[7]: doc/ServiceFactory/ContentTypeNegotiatorFactory.md

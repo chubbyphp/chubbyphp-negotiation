@@ -13,7 +13,6 @@ use Psr\Container\ContainerInterface;
 $container = ...;
 
 // $container->get(AcceptNegotiatorInterface::class.'supportedMediaTypes[]')
-// ['application/json', 'application/xml']
 
 $factory = new AcceptNegotiatorFactory();
 
@@ -33,7 +32,6 @@ use Psr\Container\ContainerInterface;
 $container = ...;
 
 // $container->get(AcceptNegotiatorInterface::class.'supportedMediaTypes[]default')
-// ['application/json', 'application/xml']
 
 $factory = [AcceptNegotiatorFactory::class, 'default'];
 
