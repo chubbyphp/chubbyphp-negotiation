@@ -27,14 +27,15 @@ A simple negotiation library.
 ## Requirements
 
  * php: ^8.1
- * chubbyphp/chubbyphp-http-exception: ^1.1
  * psr/http-message: ^1.1|^2.0
- * psr/http-server-middleware: ^1.0
 
 ## Suggest
 
  * chubbyphp/chubbyphp-container: ^2.2
+ * chubbyphp/chubbyphp-http-exception: ^1.1
+ * chubbyphp/chubbyphp-laminas-config-factory: ^1.3
  * pimple/pimple: ^3.5
+ * psr/http-server-middleware: ^1.0
 
 ## Installation
 
