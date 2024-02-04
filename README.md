@@ -111,7 +111,7 @@ $request = ...;
 $container->get('negotiator.acceptNegotiator')
     ->negotiate($request);
 
-$container->get('negotiator.acceptNegotiator')
+$container->get('negotiator.acceptLanguageNegotiator')
     ->negotiate($request);
 
 $container->get('negotiator.contentTypeNegotiator')
@@ -135,7 +135,7 @@ $request = ...;
 $container['negotiator.acceptNegotiator']
     ->negotiate($request);
 
-$container['negotiator.acceptNegotiator']
+$container['negotiator.acceptLanguageNegotiator']
     ->negotiate($request);
 
 $container['negotiator.contentTypeNegotiator']
