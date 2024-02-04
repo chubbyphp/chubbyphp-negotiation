@@ -63,7 +63,7 @@ final class ContentTypeNegotiatorTest extends TestCase
         self::assertEquals($expectedContentType, $negotiator->negotiate($request));
     }
 
-    public function provideNegotiateCases(): iterable
+    public static function provideNegotiateCases(): iterable
     {
         return [
             [

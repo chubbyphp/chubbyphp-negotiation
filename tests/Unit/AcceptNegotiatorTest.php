@@ -63,7 +63,7 @@ final class AcceptNegotiatorTest extends TestCase
         self::assertEquals($expectedAccept, $negotiator->negotiate($request));
     }
 
-    public function provideNegotiateCases(): iterable
+    public static function provideNegotiateCases(): iterable
     {
         return [
             [
