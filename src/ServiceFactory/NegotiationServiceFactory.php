@@ -7,6 +7,7 @@ namespace Chubbyphp\Negotiation\ServiceFactory;
 use Chubbyphp\Negotiation\AcceptLanguageNegotiator;
 use Chubbyphp\Negotiation\AcceptNegotiator;
 use Chubbyphp\Negotiation\ContentTypeNegotiator;
+use Chubbyphp\Negotiation\Middleware\AcceptLanguageMiddleware;
 use Chubbyphp\Negotiation\Middleware\AcceptMiddleware;
 use Chubbyphp\Negotiation\Middleware\ContentTypeMiddleware;
 use Psr\Container\ContainerInterface;
@@ -19,7 +20,7 @@ final class NegotiationServiceFactory
     public function __invoke(): array
     {
         return [
-            'negotiator.acceptLanguageMiddleware' => static fn (ContainerInterface $container) => new AcceptLanguageNegotiator($container->get('negotiator.acceptLanguageNegotiator')),
+            'negotiator.acceptLanguageMiddleware' => static fn (ContainerInterface $container) => new AcceptLanguageMiddleware($container->get('negotiator.acceptLanguageNegotiator')),
             'negotiator.acceptLanguageNegotiator' => static fn (ContainerInterface $container) => new AcceptLanguageNegotiator($container->get('negotiator.acceptLanguageNegotiator.values')),
             'negotiator.acceptMiddleware' => static fn (ContainerInterface $container) => new AcceptMiddleware($container->get('negotiator.acceptNegotiator')),
             'negotiator.acceptNegotiator' => static fn (ContainerInterface $container) => new AcceptNegotiator($container->get('negotiator.acceptNegotiator.values')),
