@@ -63,7 +63,7 @@ final class AcceptLanguageNegotiatorTest extends TestCase
         self::assertEquals($expectedAcceptLanguage, $negotiator->negotiate($request));
     }
 
-    public static function provideNegotiateCases(): iterable
+    public function provideNegotiateCases(): iterable
     {
         return [
             [
