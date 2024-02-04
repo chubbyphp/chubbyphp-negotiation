@@ -13,7 +13,6 @@ use Psr\Container\ContainerInterface;
 $container = ...;
 
 // $container->get(AcceptLanguageNegotiatorInterface::class.'supportedLocales[]')
-// ['de-CH', 'en-US']
 
 $factory = new AcceptLanguageNegotiatorFactory();
 
@@ -33,7 +32,6 @@ use Psr\Container\ContainerInterface;
 $container = ...;
 
 // $container->get(AcceptLanguageNegotiatorInterface::class.'supportedLocales[]default')
-// ['de-CH', 'en-US']
 
 $factory = [AcceptLanguageNegotiatorFactory::class, 'default'];
 
