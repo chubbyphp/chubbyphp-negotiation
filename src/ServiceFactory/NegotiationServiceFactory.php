@@ -19,7 +19,7 @@ final class NegotiationServiceFactory
     public function __invoke(): array
     {
         return [
-            'negotiator.acceptLanguageMiddleware' => static fn (ContainerInterface $container) => new AcceptLanguageNegotiator($container->get('negotiator.acceptLanguageMiddleware')),
+            'negotiator.acceptLanguageMiddleware' => static fn (ContainerInterface $container) => new AcceptLanguageNegotiator($container->get('negotiator.acceptLanguageNegotiator')),
             'negotiator.acceptLanguageNegotiator' => static fn (ContainerInterface $container) => new AcceptLanguageNegotiator($container->get('negotiator.acceptLanguageNegotiator.values')),
             'negotiator.acceptMiddleware' => static fn (ContainerInterface $container) => new AcceptMiddleware($container->get('negotiator.acceptNegotiator')),
             'negotiator.acceptNegotiator' => static fn (ContainerInterface $container) => new AcceptNegotiator($container->get('negotiator.acceptNegotiator.values')),
