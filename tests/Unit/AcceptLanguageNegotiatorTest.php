@@ -10,7 +10,11 @@ use Chubbyphp\Negotiation\AcceptLanguageNegotiator;
 use Chubbyphp\Negotiation\NegotiatedValue;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * @covers \Chubbyphp\Negotiation\AcceptLanguageNegotiator
@@ -33,7 +37,7 @@ final class AcceptLanguageNegotiatorTest extends TestCase
         $negotiator = new AcceptLanguageNegotiator([]);
 
         /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class);
+        $request = self::getMockByCalls(ServerRequestInterface::class);
 
         self::assertNull($negotiator->negotiate($request));
     }
@@ -43,7 +47,7 @@ final class AcceptLanguageNegotiatorTest extends TestCase
         $negotiator = new AcceptLanguageNegotiator(['en']);
 
         /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
+        $request = self::getMockByCalls(ServerRequestInterface::class, [
             Call::create('hasHeader')->with('Accept-Language')->willReturn(false),
         ]);
 
@@ -63,103 +67,246 @@ final class AcceptLanguageNegotiatorTest extends TestCase
         self::assertEquals($expectedAcceptLanguage, $negotiator->negotiate($request));
     }
 
-    public function provideNegotiateCases(): iterable
+    public static function provideNegotiateCases(): iterable
     {
         return [
             [
-                'request' => $this->getRequest('de,en;q=0.3,en-US;q=0.7'),
+                'request' => self::getRequest('de,en;q=0.3,en-US;q=0.7'),
                 'supportedMediaTypes' => ['en', 'de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [
-                'request' => $this->getRequest('de, en -US;q    =0.7,en;     q=0.3'),
+                'request' => self::getRequest('de, en -US;q    =0.7,en;     q=0.3'),
                 'supportedMediaTypes' => ['en', 'de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [
-                'request' => $this->getRequest('de,en;q=0.3,en   - US ; q = 0.7'),
+                'request' => self::getRequest('de,en;q=0.3,en   - US ; q = 0.7'),
                 'supportedMediaTypes' => ['en'],
                 'expectedAcceptLanguage' => new NegotiatedValue('en', ['q' => '0.3']),
             ],
             [
-                'request' => $this->getRequest('de,                       en ; q                   =         0.3   '),
+                'request' => self::getRequest('de,                       en ; q                   =         0.3   '),
                 'supportedMediaTypes' => ['en'],
                 'expectedAcceptLanguage' => new NegotiatedValue('en', ['q' => '0.3']),
             ],
             [
-                'request' => $this->getRequest('pt ; q= 0.5,de,en;q=0.3'),
+                'request' => self::getRequest('pt ; q= 0.5,de,en;q=0.3'),
                 'supportedMediaTypes' => ['fr'],
                 'expectedAcceptLanguage' => null,
             ],
             [
-                'request' => $this->getRequest('en-US;q=0.7,*;q=0.3,fr; q=0.8'),
+                'request' => self::getRequest('en-US;q=0.7,*;q=0.3,fr; q=0.8'),
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.3']),
             ],
             [
-                'request' => $this->getRequest('en-US;q=0.7,*;q=0.3,fr; q=0.8'),
+                'request' => self::getRequest('en-US;q=0.7,*;q=0.3,fr; q=0.8'),
                 'supportedMediaTypes' => ['fr'],
                 'expectedAcceptLanguage' => new NegotiatedValue('fr', ['q' => '0.8']),
             ],
             [
-                'request' => $this->getRequest('en; q=0.1, fr; q=0.4, fu; q=0.9, de; q=0.2'),
+                'request' => self::getRequest('en; q=0.1, fr; q=0.4, fu; q=0.9, de; q=0.2'),
                 'supportedMediaTypes' => ['de', 'fu', 'en'],
                 'expectedAcceptLanguage' => new NegotiatedValue('fu', ['q' => '0.9']),
             ],
             [
-                'request' => $this->getRequest('de-CH,de;q=0.8'),
+                'request' => self::getRequest('de-CH,de;q=0.8'),
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.8']),
             ],
             [
-                'request' => $this->getRequest('de-CH'),
+                'request' => self::getRequest('de-CH'),
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [
-                'request' => $this->getRequest('de'),
+                'request' => self::getRequest('de'),
                 'supportedMediaTypes' => ['de-CH'],
                 'expectedAcceptLanguage' => null,
             ],
             [
-                'request' => $this->getRequest('*,de;q=0.1'),
+                'request' => self::getRequest('*,de;q=0.1'),
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.1']),
             ],
             [
-                'request' => $this->getRequest('de-DE-AT,en-US'),
+                'request' => self::getRequest('de-DE-AT,en-US'),
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => null,
             ],
             [
-                'request' => $this->getRequest('en,fr,it,de-CH'),
+                'request' => self::getRequest('en,fr,it,de-CH'),
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [ // invalid header - semicolon without qvalue key pair
-                'request' => $this->getRequest('de;'),
+                'request' => self::getRequest('de;'),
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [ // invalid header - semicolon with qvalue key only
-                'request' => $this->getRequest('de;q'),
+                'request' => self::getRequest('de;q'),
                 'supportedMediaTypes' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
         ];
     }
 
-    private function getRequest(?string $acceptHeader = null): ServerRequestInterface
+    private static function getRequest(?string $acceptLanguageHeader = null): ServerRequestInterface
     {
-        if (null === $acceptHeader) {
-            return $this->getMockByCalls(ServerRequestInterface::class, [
-                Call::create('hasHeader')->with('Accept-Language')->willReturn(false),
-            ]);
-        }
+        return new class($acceptLanguageHeader) implements ServerRequestInterface {
+            public function __construct(private null|string $acceptLanguageHeader) {}
 
-        return $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('hasHeader')->with('Accept-Language')->willReturn(true),
-            Call::create('getHeaderLine')->with('Accept-Language')->willReturn($acceptHeader),
-        ]);
+            public function getServerParams(): array
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getCookieParams(): array
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withCookieParams(array $cookies): ServerRequestInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getQueryParams(): array
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withQueryParams(array $query): ServerRequestInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getUploadedFiles(): array
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getParsedBody(): void
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withParsedBody($data): ServerRequestInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getAttributes(): array
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getAttribute(string $name, $default = null): void
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withAttribute(string $name, $value): ServerRequestInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withoutAttribute(string $name): ServerRequestInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getRequestTarget(): string
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withRequestTarget(string $requestTarget): RequestInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getMethod(): string
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withMethod(string $method): RequestInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getUri(): UriInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withUri(UriInterface $uri, bool $preserveHost = false): RequestInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getProtocolVersion(): string
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withProtocolVersion(string $version): MessageInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getHeaders(): array
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function hasHeader(string $name): bool
+            {
+                return null !== $this->acceptLanguageHeader;
+            }
+
+            public function getHeader(string $name): array
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getHeaderLine(string $name): string
+            {
+                return $this->acceptLanguageHeader;
+            }
+
+            public function withHeader(string $name, $value): MessageInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withAddedHeader(string $name, $value): MessageInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withoutHeader(string $name): MessageInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function getBody(): StreamInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+
+            public function withBody(StreamInterface $body): MessageInterface
+            {
+                throw new \BadMethodCallException('Not implemented');
+            }
+        };
     }
 }
