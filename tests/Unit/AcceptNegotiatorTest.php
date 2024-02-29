@@ -188,7 +188,7 @@ final class AcceptNegotiatorTest extends TestCase
     private static function getRequest(?string $acceptHeader = null): ServerRequestInterface
     {
         return new class($acceptHeader) implements ServerRequestInterface {
-            public function __construct(private null|string $acceptHeader) {}
+            public function __construct(private ?string $acceptHeader) {}
 
             public function getServerParams(): array
             {

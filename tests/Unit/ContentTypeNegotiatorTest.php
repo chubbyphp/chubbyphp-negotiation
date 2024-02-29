@@ -106,7 +106,7 @@ final class ContentTypeNegotiatorTest extends TestCase
     private static function getRequest(?string $contentTypeHeader = null): ServerRequestInterface
     {
         return new class($contentTypeHeader) implements ServerRequestInterface {
-            public function __construct(private null|string $contentTypeHeader) {}
+            public function __construct(private ?string $contentTypeHeader) {}
 
             public function getServerParams(): array
             {

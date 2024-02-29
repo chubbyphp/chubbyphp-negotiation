@@ -156,7 +156,7 @@ final class AcceptLanguageNegotiatorTest extends TestCase
     private static function getRequest(?string $acceptLanguageHeader = null): ServerRequestInterface
     {
         return new class($acceptLanguageHeader) implements ServerRequestInterface {
-            public function __construct(private null|string $acceptLanguageHeader) {}
+            public function __construct(private ?string $acceptLanguageHeader) {}
 
             public function getServerParams(): array
             {
