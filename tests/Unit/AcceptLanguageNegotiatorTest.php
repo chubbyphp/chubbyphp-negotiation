@@ -72,82 +72,82 @@ final class AcceptLanguageNegotiatorTest extends TestCase
         return [
             [
                 'request' => self::getRequest('de,en;q=0.3,en-US;q=0.7'),
-                'supportedMediaTypes' => ['en', 'de'],
+                'supportedLocales' => ['en', 'de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [
                 'request' => self::getRequest('de, en -US;q    =0.7,en;     q=0.3'),
-                'supportedMediaTypes' => ['en', 'de'],
+                'supportedLocales' => ['en', 'de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [
                 'request' => self::getRequest('de,en;q=0.3,en   - US ; q = 0.7'),
-                'supportedMediaTypes' => ['en'],
+                'supportedLocales' => ['en'],
                 'expectedAcceptLanguage' => new NegotiatedValue('en', ['q' => '0.3']),
             ],
             [
                 'request' => self::getRequest('de,                       en ; q                   =         0.3   '),
-                'supportedMediaTypes' => ['en'],
+                'supportedLocales' => ['en'],
                 'expectedAcceptLanguage' => new NegotiatedValue('en', ['q' => '0.3']),
             ],
             [
                 'request' => self::getRequest('pt ; q= 0.5,de,en;q=0.3'),
-                'supportedMediaTypes' => ['fr'],
+                'supportedLocales' => ['fr'],
                 'expectedAcceptLanguage' => null,
             ],
             [
                 'request' => self::getRequest('en-US;q=0.7,*;q=0.3,fr; q=0.8'),
-                'supportedMediaTypes' => ['de'],
+                'supportedLocales' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.3']),
             ],
             [
                 'request' => self::getRequest('en-US;q=0.7,*;q=0.3,fr; q=0.8'),
-                'supportedMediaTypes' => ['fr'],
+                'supportedLocales' => ['fr'],
                 'expectedAcceptLanguage' => new NegotiatedValue('fr', ['q' => '0.8']),
             ],
             [
                 'request' => self::getRequest('en; q=0.1, fr; q=0.4, fu; q=0.9, de; q=0.2'),
-                'supportedMediaTypes' => ['de', 'fu', 'en'],
+                'supportedLocales' => ['de', 'fu', 'en'],
                 'expectedAcceptLanguage' => new NegotiatedValue('fu', ['q' => '0.9']),
             ],
             [
                 'request' => self::getRequest('de-CH,de;q=0.8'),
-                'supportedMediaTypes' => ['de'],
+                'supportedLocales' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.8']),
             ],
             [
                 'request' => self::getRequest('de-CH'),
-                'supportedMediaTypes' => ['de'],
+                'supportedLocales' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [
                 'request' => self::getRequest('de'),
-                'supportedMediaTypes' => ['de-CH'],
+                'supportedLocales' => ['de-CH'],
                 'expectedAcceptLanguage' => null,
             ],
             [
                 'request' => self::getRequest('*,de;q=0.1'),
-                'supportedMediaTypes' => ['de'],
+                'supportedLocales' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.1']),
             ],
             [
                 'request' => self::getRequest('de-DE-AT,en-US'),
-                'supportedMediaTypes' => ['de'],
+                'supportedLocales' => ['de'],
                 'expectedAcceptLanguage' => null,
             ],
             [
                 'request' => self::getRequest('en,fr,it,de-CH'),
-                'supportedMediaTypes' => ['de'],
+                'supportedLocales' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [ // invalid header - semicolon without qvalue key pair
                 'request' => self::getRequest('de;'),
-                'supportedMediaTypes' => ['de'],
+                'supportedLocales' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
             [ // invalid header - semicolon with qvalue key only
                 'request' => self::getRequest('de;q'),
-                'supportedMediaTypes' => ['de'],
+                'supportedLocales' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '1.0']),
             ],
         ];

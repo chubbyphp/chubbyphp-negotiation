@@ -42,7 +42,7 @@ final class ContentTypeMiddleware implements MiddlewareInterface
     private function aggregateData(string $header, string $value, array $supportedValues): array
     {
         return [
-            'detail' => sprintf(
+            'detail' => \sprintf(
                 '%s %s, supportedValues: "%s"',
                 '' !== $value ? 'Not supported' : 'Missing',
                 $header,

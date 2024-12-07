@@ -26,7 +26,7 @@ A simple negotiation library.
 
 ## Requirements
 
- * php: ^8.1
+ * php: ^8.2
  * psr/http-message: ^1.1|^2.0
 
 ## Suggest
@@ -35,14 +35,14 @@ A simple negotiation library.
  * chubbyphp/chubbyphp-http-exception: ^1.1
  * chubbyphp/chubbyphp-laminas-config-factory: ^1.3
  * pimple/pimple: ^3.5
- * psr/http-server-middleware: ^1.0
+ * psr/http-server-middleware: ^1.0.2
 
 ## Installation
 
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-negotiation][1].
 
 ```sh
-composer require chubbyphp/chubbyphp-negotiation "^2.1"
+composer require chubbyphp/chubbyphp-negotiation "^2.2"
 ```
 
 ## Usage
