@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Negotiation\Unit\ServiceFactory;
 
-use Chubbyphp\Mock\Call;
-use Chubbyphp\Mock\MockByCallsTrait;
+use Chubbyphp\Mock\MockMethod\WithReturn;
+use Chubbyphp\Mock\MockObjectBuilder;
 use Chubbyphp\Negotiation\ContentTypeNegotiatorInterface;
 use Chubbyphp\Negotiation\ServiceFactory\ContentTypeNegotiatorFactory;
 use PHPUnit\Framework\TestCase;
@@ -18,13 +18,13 @@ use Psr\Container\ContainerInterface;
  */
 final class ContentTypeNegotiatorFactoryTest extends TestCase
 {
-    use MockByCallsTrait;
-
     public function testInvoke(): void
     {
+        $builder = new MockObjectBuilder();
+
         /** @var ContainerInterface $container */
-        $container = $this->getMockByCalls(ContainerInterface::class, [
-            Call::create('get')->with(ContentTypeNegotiatorInterface::class.'supportedMediaTypes[]')->willReturn([]),
+        $container = $builder->create(ContainerInterface::class, [
+            new WithReturn('get', [ContentTypeNegotiatorInterface::class.'supportedMediaTypes[]'], []),
         ]);
 
         $factory = new ContentTypeNegotiatorFactory();
@@ -36,9 +36,11 @@ final class ContentTypeNegotiatorFactoryTest extends TestCase
 
     public function testCallStatic(): void
     {
+        $builder = new MockObjectBuilder();
+
         /** @var ContainerInterface $container */
-        $container = $this->getMockByCalls(ContainerInterface::class, [
-            Call::create('get')->with(ContentTypeNegotiatorInterface::class.'supportedMediaTypes[]default')->willReturn([]),
+        $container = $builder->create(ContainerInterface::class, [
+            new WithReturn('get', [ContentTypeNegotiatorInterface::class.'supportedMediaTypes[]default'], []),
         ]);
 
         $factory = [ContentTypeNegotiatorFactory::class, 'default'];

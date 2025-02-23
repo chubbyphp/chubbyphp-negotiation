@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Chubbyphp\Tests\Negotiation\Unit\Middleware;
 
 use Chubbyphp\HttpException\HttpException;
-use Chubbyphp\Mock\Call;
-use Chubbyphp\Mock\MockByCallsTrait;
+use Chubbyphp\Mock\MockMethod\WithReturn;
+use Chubbyphp\Mock\MockMethod\WithReturnSelf;
+use Chubbyphp\Mock\MockObjectBuilder;
 use Chubbyphp\Negotiation\AcceptNegotiatorInterface;
 use Chubbyphp\Negotiation\Middleware\AcceptMiddleware;
 use Chubbyphp\Negotiation\NegotiatedValueInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,22 +23,22 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class AcceptMiddlewareTest extends TestCase
 {
-    use MockByCallsTrait;
-
     public function testProcessWithoutMatching(): void
     {
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getHeaderLine')->with('Accept')->willReturn('application/xml, application/x-yaml;q=0.9'),
+        $builder = new MockObjectBuilder();
+
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getHeaderLine', ['Accept'], 'application/xml, application/x-yaml;q=0.9'),
         ]);
 
-        /** @var MockObject|RequestHandlerInterface $handler */
-        $handler = $this->getMockByCalls(RequestHandlerInterface::class, []);
+        /** @var RequestHandlerInterface $handler */
+        $handler = $builder->create(RequestHandlerInterface::class, []);
 
-        /** @var AcceptNegotiatorInterface|MockObject $acceptNegotiator */
-        $acceptNegotiator = $this->getMockByCalls(AcceptNegotiatorInterface::class, [
-            Call::create('negotiate')->with($request)->willReturn(null),
-            Call::create('getSupportedMediaTypes')->with()->willReturn(['application/json']),
+        /** @var AcceptNegotiatorInterface $acceptNegotiator */
+        $acceptNegotiator = $builder->create(AcceptNegotiatorInterface::class, [
+            new WithReturn('negotiate', [$request], null),
+            new WithReturn('getSupportedMediaTypes', [], ['application/json']),
         ]);
 
         $middleware = new AcceptMiddleware($acceptNegotiator);
@@ -49,14 +49,15 @@ final class AcceptMiddlewareTest extends TestCase
             throw new \Exception('code should not be reached');
         } catch (HttpException $e) {
             self::assertSame('Not Acceptable', $e->getMessage());
-            self::assertSame(['type' => 'https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.7',
+            self::assertSame([
+                'type' => 'https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.7',
                 'status' => 406,
                 'title' => 'Not Acceptable',
                 'detail' => 'Not supported accept, supportedValues: "application/json"',
                 'instance' => null,
                 'value' => 'application/xml, application/x-yaml;q=0.9',
                 'supportedValues' => [
-                    0 => 'application/json',
+                    'application/json',
                 ],
             ], $e->jsonSerialize());
         }
@@ -64,31 +65,33 @@ final class AcceptMiddlewareTest extends TestCase
 
     public function testProcessWithMatching(): void
     {
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('withAttribute')->with('accept', 'application/json')->willReturnSelf(),
+        $builder = new MockObjectBuilder();
+
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturnSelf('withAttribute', ['accept', 'application/json']),
         ]);
 
-        /** @var MockObject|ResponseInterface $response */
-        $response = $this->getMockByCalls(ResponseInterface::class, []);
+        /** @var ResponseInterface $response */
+        $response = $builder->create(ResponseInterface::class, []);
 
-        /** @var MockObject|RequestHandlerInterface $handler */
-        $handler = $this->getMockByCalls(RequestHandlerInterface::class, [
-            Call::create('handle')->with($request)->willReturn($response),
+        /** @var RequestHandlerInterface $handler */
+        $handler = $builder->create(RequestHandlerInterface::class, [
+            new WithReturn('handle', [$request], $response),
         ]);
 
-        /** @var MockObject|NegotiatedValueInterface $negotiatedValue */
-        $negotiatedValue = $this->getMockByCalls(NegotiatedValueInterface::class, [
-            Call::create('getValue')->with()->willReturn('application/json'),
+        /** @var NegotiatedValueInterface $negotiatedValue */
+        $negotiatedValue = $builder->create(NegotiatedValueInterface::class, [
+            new WithReturn('getValue', [], 'application/json'),
         ]);
 
-        /** @var AcceptNegotiatorInterface|MockObject $acceptNegotiator */
-        $acceptNegotiator = $this->getMockByCalls(AcceptNegotiatorInterface::class, [
-            Call::create('negotiate')->with($request)->willReturn($negotiatedValue),
+        /** @var AcceptNegotiatorInterface $acceptNegotiator */
+        $acceptNegotiator = $builder->create(AcceptNegotiatorInterface::class, [
+            new WithReturn('negotiate', [$request], $negotiatedValue),
         ]);
 
         $middleware = new AcceptMiddleware($acceptNegotiator);
 
-        $response = $middleware->process($request, $handler);
+        self::assertSame($response, $middleware->process($request, $handler));
     }
 }
