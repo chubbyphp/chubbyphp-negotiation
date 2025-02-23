@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Negotiation\Unit;
 
-use Chubbyphp\Mock\Call;
-use Chubbyphp\Mock\MockByCallsTrait;
+use Chubbyphp\Mock\MockMethod\WithReturn;
+use Chubbyphp\Mock\MockObjectBuilder;
 use Chubbyphp\Negotiation\AcceptNegotiator;
 use Chubbyphp\Negotiation\NegotiatedValue;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
@@ -23,8 +22,6 @@ use Psr\Http\Message\UriInterface;
  */
 final class AcceptNegotiatorTest extends TestCase
 {
-    use MockByCallsTrait;
-
     public function testGetSupportedMediaTypes(): void
     {
         $negotiator = new AcceptNegotiator(['application/json']);
@@ -34,21 +31,25 @@ final class AcceptNegotiatorTest extends TestCase
 
     public function testWithoutSupportedMimeTypes(): void
     {
+        $builder = new MockObjectBuilder();
+
         $negotiator = new AcceptNegotiator([]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = self::getMockByCalls(ServerRequestInterface::class);
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, []);
 
         self::assertNull($negotiator->negotiate($request));
     }
 
     public function testWithoutHeader(): void
     {
+        $builder = new MockObjectBuilder();
+
         $negotiator = new AcceptNegotiator(['application/json']);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = self::getMockByCalls(ServerRequestInterface::class, [
-            Call::create('hasHeader')->with('Accept')->willReturn(false),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('hasHeader', ['Accept'], false),
         ]);
 
         self::assertNull($negotiator->negotiate($request));

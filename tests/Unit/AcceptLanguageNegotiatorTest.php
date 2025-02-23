@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Negotiation\Unit;
 
-use Chubbyphp\Mock\Call;
-use Chubbyphp\Mock\MockByCallsTrait;
+use Chubbyphp\Mock\MockMethod\WithReturn;
+use Chubbyphp\Mock\MockObjectBuilder;
 use Chubbyphp\Negotiation\AcceptLanguageNegotiator;
 use Chubbyphp\Negotiation\NegotiatedValue;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
@@ -23,8 +22,6 @@ use Psr\Http\Message\UriInterface;
  */
 final class AcceptLanguageNegotiatorTest extends TestCase
 {
-    use MockByCallsTrait;
-
     public function testGetSupportedLocales(): void
     {
         $negotiator = new AcceptLanguageNegotiator(['en']);
@@ -34,21 +31,25 @@ final class AcceptLanguageNegotiatorTest extends TestCase
 
     public function testWithoutSupportedMimeTypes(): void
     {
+        $builder = new MockObjectBuilder();
+
         $negotiator = new AcceptLanguageNegotiator([]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = self::getMockByCalls(ServerRequestInterface::class);
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, []);
 
         self::assertNull($negotiator->negotiate($request));
     }
 
     public function testWithoutHeader(): void
     {
+        $builder = new MockObjectBuilder();
+
         $negotiator = new AcceptLanguageNegotiator(['en']);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = self::getMockByCalls(ServerRequestInterface::class, [
-            Call::create('hasHeader')->with('Accept-Language')->willReturn(false),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('hasHeader', ['Accept-Language'], false),
         ]);
 
         self::assertNull($negotiator->negotiate($request));

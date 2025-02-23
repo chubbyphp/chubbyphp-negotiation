@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Negotiation\Unit\ServiceFactory;
 
-use Chubbyphp\Mock\Call;
-use Chubbyphp\Mock\MockByCallsTrait;
+use Chubbyphp\Mock\MockMethod\WithReturn;
+use Chubbyphp\Mock\MockObjectBuilder;
 use Chubbyphp\Negotiation\AcceptLanguageNegotiatorInterface;
 use Chubbyphp\Negotiation\ServiceFactory\AcceptLanguageNegotiatorFactory;
 use PHPUnit\Framework\TestCase;
@@ -18,13 +18,13 @@ use Psr\Container\ContainerInterface;
  */
 final class AcceptLanguageNegotiatorFactoryTest extends TestCase
 {
-    use MockByCallsTrait;
-
     public function testInvoke(): void
     {
+        $builder = new MockObjectBuilder();
+
         /** @var ContainerInterface $container */
-        $container = $this->getMockByCalls(ContainerInterface::class, [
-            Call::create('get')->with(AcceptLanguageNegotiatorInterface::class.'supportedLocales[]')->willReturn([]),
+        $container = $builder->create(ContainerInterface::class, [
+            new WithReturn('get', [AcceptLanguageNegotiatorInterface::class.'supportedLocales[]'], []),
         ]);
 
         $factory = new AcceptLanguageNegotiatorFactory();
@@ -36,9 +36,11 @@ final class AcceptLanguageNegotiatorFactoryTest extends TestCase
 
     public function testCallStatic(): void
     {
+        $builder = new MockObjectBuilder();
+
         /** @var ContainerInterface $container */
-        $container = $this->getMockByCalls(ContainerInterface::class, [
-            Call::create('get')->with(AcceptLanguageNegotiatorInterface::class.'supportedLocales[]default')->willReturn([]),
+        $container = $builder->create(ContainerInterface::class, [
+            new WithReturn('get', [AcceptLanguageNegotiatorInterface::class.'supportedLocales[]default'], []),
         ]);
 
         $factory = [AcceptLanguageNegotiatorFactory::class, 'default'];

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Negotiation\Unit\ServiceFactory;
 
-use Chubbyphp\Mock\Call;
-use Chubbyphp\Mock\MockByCallsTrait;
+use Chubbyphp\Mock\MockMethod\WithReturn;
+use Chubbyphp\Mock\MockObjectBuilder;
 use Chubbyphp\Negotiation\AcceptLanguageNegotiatorInterface;
 use Chubbyphp\Negotiation\ServiceFactory\AcceptLanguageMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
@@ -19,16 +19,16 @@ use Psr\Http\Server\MiddlewareInterface;
  */
 final class AcceptLanguageMiddlewareFactoryTest extends TestCase
 {
-    use MockByCallsTrait;
-
     public function testInvoke(): void
     {
+        $builder = new MockObjectBuilder();
+
         /** @var AcceptLanguageNegotiatorInterface $acceptLanguageNegotiator */
-        $acceptLanguageNegotiator = $this->getMockByCalls(AcceptLanguageNegotiatorInterface::class, []);
+        $acceptLanguageNegotiator = $builder->create(AcceptLanguageNegotiatorInterface::class, []);
 
         /** @var ContainerInterface $container */
-        $container = $this->getMockByCalls(ContainerInterface::class, [
-            Call::create('get')->with(AcceptLanguageNegotiatorInterface::class)->willReturn($acceptLanguageNegotiator),
+        $container = $builder->create(ContainerInterface::class, [
+            new WithReturn('get', [AcceptLanguageNegotiatorInterface::class], $acceptLanguageNegotiator),
         ]);
 
         $factory = new AcceptLanguageMiddlewareFactory();
@@ -40,12 +40,14 @@ final class AcceptLanguageMiddlewareFactoryTest extends TestCase
 
     public function testCallStatic(): void
     {
+        $builder = new MockObjectBuilder();
+
         /** @var AcceptLanguageNegotiatorInterface $acceptLanguageNegotiator */
-        $acceptLanguageNegotiator = $this->getMockByCalls(AcceptLanguageNegotiatorInterface::class, []);
+        $acceptLanguageNegotiator = $builder->create(AcceptLanguageNegotiatorInterface::class, []);
 
         /** @var ContainerInterface $container */
-        $container = $this->getMockByCalls(ContainerInterface::class, [
-            Call::create('get')->with(AcceptLanguageNegotiatorInterface::class.'default')->willReturn($acceptLanguageNegotiator),
+        $container = $builder->create(ContainerInterface::class, [
+            new WithReturn('get', [AcceptLanguageNegotiatorInterface::class.'default'], $acceptLanguageNegotiator),
         ]);
 
         $factory = [AcceptLanguageMiddlewareFactory::class, 'default'];

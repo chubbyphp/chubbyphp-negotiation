@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Negotiation\Unit\ServiceFactory;
 
-use Chubbyphp\Mock\Call;
-use Chubbyphp\Mock\MockByCallsTrait;
+use Chubbyphp\Mock\MockMethod\WithReturn;
+use Chubbyphp\Mock\MockObjectBuilder;
 use Chubbyphp\Negotiation\AcceptNegotiatorInterface;
 use Chubbyphp\Negotiation\ServiceFactory\AcceptMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
@@ -19,16 +19,16 @@ use Psr\Http\Server\MiddlewareInterface;
  */
 final class AcceptMiddlewareFactoryTest extends TestCase
 {
-    use MockByCallsTrait;
-
     public function testInvoke(): void
     {
+        $builder = new MockObjectBuilder();
+
         /** @var AcceptNegotiatorInterface $acceptNegotiator */
-        $acceptNegotiator = $this->getMockByCalls(AcceptNegotiatorInterface::class, []);
+        $acceptNegotiator = $builder->create(AcceptNegotiatorInterface::class, []);
 
         /** @var ContainerInterface $container */
-        $container = $this->getMockByCalls(ContainerInterface::class, [
-            Call::create('get')->with(AcceptNegotiatorInterface::class)->willReturn($acceptNegotiator),
+        $container = $builder->create(ContainerInterface::class, [
+            new WithReturn('get', [AcceptNegotiatorInterface::class], $acceptNegotiator),
         ]);
 
         $factory = new AcceptMiddlewareFactory();
@@ -40,12 +40,14 @@ final class AcceptMiddlewareFactoryTest extends TestCase
 
     public function testCallStatic(): void
     {
+        $builder = new MockObjectBuilder();
+
         /** @var AcceptNegotiatorInterface $acceptNegotiator */
-        $acceptNegotiator = $this->getMockByCalls(AcceptNegotiatorInterface::class, []);
+        $acceptNegotiator = $builder->create(AcceptNegotiatorInterface::class, []);
 
         /** @var ContainerInterface $container */
-        $container = $this->getMockByCalls(ContainerInterface::class, [
-            Call::create('get')->with(AcceptNegotiatorInterface::class.'default')->willReturn($acceptNegotiator),
+        $container = $builder->create(ContainerInterface::class, [
+            new WithReturn('get', [AcceptNegotiatorInterface::class.'default'], $acceptNegotiator),
         ]);
 
         $factory = [AcceptMiddlewareFactory::class, 'default'];
