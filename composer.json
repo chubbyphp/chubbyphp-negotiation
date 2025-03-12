@@ -21,7 +21,7 @@
         "chubbyphp/chubbyphp-dev-helper": "dev-master",
         "chubbyphp/chubbyphp-http-exception": "^1.2",
         "chubbyphp/chubbyphp-laminas-config-factory": "^1.4",
-        "chubbyphp/chubbyphp-mock": "^2.0@dev",
+        "chubbyphp/chubbyphp-mock": "^2.0",
         "infection/infection": "^0.29.12",
         "php-coveralls/php-coveralls": "^2.7.0",
         "phpstan/extension-installer": "^1.4.3",
