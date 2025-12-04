@@ -8,6 +8,7 @@ use Chubbyphp\Mock\MockMethod\WithReturn;
 use Chubbyphp\Mock\MockObjectBuilder;
 use Chubbyphp\Negotiation\AcceptNegotiator;
 use Chubbyphp\Negotiation\NegotiatedValue;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
@@ -55,9 +56,7 @@ final class AcceptNegotiatorTest extends TestCase
         self::assertNull($negotiator->negotiate($request));
     }
 
-    /**
-     * @dataProvider provideNegotiateCases
-     */
+    #[DataProvider('provideNegotiateCases')]
     public function testNegotiate(
         ServerRequestInterface $request,
         array $supportedMediaTypes,
