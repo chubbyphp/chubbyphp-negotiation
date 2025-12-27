@@ -14,7 +14,7 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
     /**
      * @param array<int, string> $supportedLocales
      */
-    public function __construct(private array $supportedLocales) {}
+    public function __construct(private readonly array $supportedLocales) {}
 
     /**
      * @return array<int, string>
@@ -87,7 +87,9 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
         }
 
         if (isset($acceptLanguages['*'])) {
-            return new NegotiatedValue(reset($this->supportedLocales), $acceptLanguages['*']);
+            foreach ($this->supportedLocales as $supportedLocale) {
+                return new NegotiatedValue($supportedLocale, $acceptLanguages['*']);
+            }
         }
 
         return null;

@@ -14,7 +14,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class ContentTypeMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private ContentTypeNegotiatorInterface $contentTypeNegotiator,
+        private readonly ContentTypeNegotiatorInterface $contentTypeNegotiator,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

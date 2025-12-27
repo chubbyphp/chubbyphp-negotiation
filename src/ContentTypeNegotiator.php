@@ -14,7 +14,7 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
     /**
      * @param array<int, string> $supportedMediaTypes
      */
-    public function __construct(private array $supportedMediaTypes) {}
+    public function __construct(private readonly array $supportedMediaTypes) {}
 
     /**
      * @return array<int, string>

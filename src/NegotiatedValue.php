@@ -9,7 +9,7 @@ final class NegotiatedValue implements NegotiatedValueInterface
     /**
      * @param array<string, string> $attributes
      */
-    public function __construct(private string $value, private array $attributes = []) {}
+    public function __construct(private readonly string $value, private readonly array $attributes = []) {}
 
     public function getValue(): string
     {

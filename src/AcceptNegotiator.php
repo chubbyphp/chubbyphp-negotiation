@@ -14,31 +14,34 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     /**
      * @var array<int, string>
      */
-    private array $supportedMediaTypes;
+    private readonly array $supportedMediaTypes;
 
     /**
      * @var array<int, string>
      */
-    private array $suffixBasedSupportedMediaTypes;
+    private readonly array $suffixBasedSupportedMediaTypes;
 
     /**
      * @param array<int, string> $supportedMediaTypes
      */
     public function __construct(array $supportedMediaTypes)
     {
-        $this->supportedMediaTypes = [];
-        $this->suffixBasedSupportedMediaTypes = [];
+        $indexedSupportedMediaTypes = [];
+        $indexedSuffixBasedSupportedMediaTypes = [];
 
         foreach ($supportedMediaTypes as $index => $supportedMediaType) {
-            $this->supportedMediaTypes[$index] = $supportedMediaType;
+            $indexedSupportedMediaTypes[$index] = $supportedMediaType;
 
             $supportedMediaTypeParts = [];
             if (1 !== preg_match('#^([^/+]+)/([^/+]+)\+([^/+]+)$#', $supportedMediaType, $supportedMediaTypeParts)) {
                 continue;
             }
 
-            $this->suffixBasedSupportedMediaTypes[$index] = $supportedMediaTypeParts[1].'/'.$supportedMediaTypeParts[3];
+            $indexedSuffixBasedSupportedMediaTypes[$index] = $supportedMediaTypeParts[1].'/'.$supportedMediaTypeParts[3];
         }
+
+        $this->supportedMediaTypes = $indexedSupportedMediaTypes;
+        $this->suffixBasedSupportedMediaTypes = $indexedSuffixBasedSupportedMediaTypes;
     }
 
     /**
@@ -118,7 +121,9 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
         }
 
         if (isset($mediaTypes['*/*'])) {
-            return new NegotiatedValue(reset($this->supportedMediaTypes), $mediaTypes['*/*']);
+            foreach ($this->supportedMediaTypes as $supportedMediaType) {
+                return new NegotiatedValue($supportedMediaType, $mediaTypes['*/*']);
+            }
         }
 
         return null;

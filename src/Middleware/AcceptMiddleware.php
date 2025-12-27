@@ -14,7 +14,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class AcceptMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private AcceptNegotiatorInterface $acceptNegotiator,
+        private readonly AcceptNegotiatorInterface $acceptNegotiator,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
