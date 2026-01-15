@@ -37,7 +37,7 @@ final class AcceptMiddleware implements MiddlewareInterface
     /**
      * @param array<string> $supportedValues
      *
-     * @return array<string, array<string>|string>
+     * @return array{detail: string, value: string, supportedValues: array<string>}
      */
     private function aggregateData(string $header, string $value, array $supportedValues): array
     {

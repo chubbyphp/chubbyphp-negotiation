@@ -13,8 +13,9 @@ final class ContentTypeNegotiatorFactory extends AbstractFactory
 {
     public function __invoke(ContainerInterface $container): ContentTypeNegotiatorInterface
     {
-        return new ContentTypeNegotiator(
-            $container->get(ContentTypeNegotiatorInterface::class.'supportedMediaTypes[]'.$this->name)
-        );
+        /** @var array<int, string> $supportedMediaTypes */
+        $supportedMediaTypes = $container->get(ContentTypeNegotiatorInterface::class.'supportedMediaTypes[]'.$this->name);
+
+        return new ContentTypeNegotiator($supportedMediaTypes);
     }
 }

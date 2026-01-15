@@ -1,6 +1,1 @@
 parameters:
-    ignoreErrors:
-        -
-            message: '/Interface, Closure given\./'
-            path: %currentWorkingDirectory%/src/ServiceProvider/NegotiationServiceProvider.php
-

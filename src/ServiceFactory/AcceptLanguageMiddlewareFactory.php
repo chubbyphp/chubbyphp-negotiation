@@ -14,8 +14,9 @@ final class AcceptLanguageMiddlewareFactory extends AbstractFactory
 {
     public function __invoke(ContainerInterface $container): MiddlewareInterface
     {
-        return new AcceptLanguageMiddleware(
-            $container->get(AcceptLanguageNegotiatorInterface::class.$this->name)
-        );
+        /** @var AcceptLanguageNegotiatorInterface $acceptLanguageNegotiator */
+        $acceptLanguageNegotiator = $container->get(AcceptLanguageNegotiatorInterface::class.$this->name);
+
+        return new AcceptLanguageMiddleware($acceptLanguageNegotiator);
     }
 }

@@ -14,8 +14,9 @@ final class ContentTypeMiddlewareFactory extends AbstractFactory
 {
     public function __invoke(ContainerInterface $container): MiddlewareInterface
     {
-        return new ContentTypeMiddleware(
-            $container->get(ContentTypeNegotiatorInterface::class.$this->name)
-        );
+        /** @var ContentTypeNegotiatorInterface $contentTypeNegotiator */
+        $contentTypeNegotiator = $container->get(ContentTypeNegotiatorInterface::class.$this->name);
+
+        return new ContentTypeMiddleware($contentTypeNegotiator);
     }
 }

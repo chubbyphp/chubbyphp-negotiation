@@ -14,8 +14,9 @@ final class AcceptMiddlewareFactory extends AbstractFactory
 {
     public function __invoke(ContainerInterface $container): MiddlewareInterface
     {
-        return new AcceptMiddleware(
-            $container->get(AcceptNegotiatorInterface::class.$this->name)
-        );
+        /** @var AcceptNegotiatorInterface $acceptNegotiator */
+        $acceptNegotiator = $container->get(AcceptNegotiatorInterface::class.$this->name);
+
+        return new AcceptMiddleware($acceptNegotiator);
     }
 }
