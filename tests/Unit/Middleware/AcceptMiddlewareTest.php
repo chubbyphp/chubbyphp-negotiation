@@ -63,6 +63,46 @@ final class AcceptMiddlewareTest extends TestCase
         }
     }
 
+    public function testProcessWithoutHeaderValue(): void
+    {
+        $builder = new MockObjectBuilder();
+
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getHeaderLine', ['Accept'], ''),
+        ]);
+
+        /** @var RequestHandlerInterface $handler */
+        $handler = $builder->create(RequestHandlerInterface::class, []);
+
+        /** @var AcceptNegotiatorInterface $acceptNegotiator */
+        $acceptNegotiator = $builder->create(AcceptNegotiatorInterface::class, [
+            new WithReturn('negotiate', [$request], null),
+            new WithReturn('getSupportedMediaTypes', [], ['application/json']),
+        ]);
+
+        $middleware = new AcceptMiddleware($acceptNegotiator);
+
+        try {
+            $middleware->process($request, $handler);
+
+            throw new \Exception('code should not be reached');
+        } catch (HttpException $e) {
+            self::assertSame('Not Acceptable', $e->getMessage());
+            self::assertSame([
+                'type' => 'https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.7',
+                'status' => 406,
+                'title' => 'Not Acceptable',
+                'detail' => 'Missing accept, supportedValues: "application/json"',
+                'instance' => null,
+                'value' => '',
+                'supportedValues' => [
+                    'application/json',
+                ],
+            ], $e->jsonSerialize());
+        }
+    }
+
     public function testProcessWithMatching(): void
     {
         $builder = new MockObjectBuilder();

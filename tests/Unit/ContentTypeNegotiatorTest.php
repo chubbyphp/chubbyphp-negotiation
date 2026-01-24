@@ -100,6 +100,11 @@ final class ContentTypeNegotiatorTest extends TestCase
                 'supportedMediaTypes' => ['application/json'],
                 'expectedContentType' => null,
             ],
+            [
+                'request' => self::getRequest("application/vnd.api+json\nextra"),
+                'supportedMediaTypes' => ['application/json'],
+                'expectedContentType' => null,
+            ],
         ];
     }
 

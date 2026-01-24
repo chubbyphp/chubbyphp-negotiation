@@ -172,6 +172,11 @@ final class AcceptNegotiatorTest extends TestCase
                 'supportedMediaTypes' => ['application/ld+json'],
                 'expectedAccept' => new NegotiatedValue('application/ld+json', ['q' => '1.0']),
             ],
+            [
+                'request' => self::getRequest('application/json'),
+                'supportedMediaTypes' => ['application/vnd.api+json/extra'],
+                'expectedAccept' => null,
+            ],
             [ // invalid header - semicolon without qvalue key pair
                 'request' => self::getRequest('application/json;'),
                 'supportedMediaTypes' => ['application/json'],
@@ -181,6 +186,16 @@ final class AcceptNegotiatorTest extends TestCase
                 'request' => self::getRequest('application/json;q'),
                 'supportedMediaTypes' => ['application/json'],
                 'expectedAccept' => new NegotiatedValue('application/json', ['q' => '1.0']),
+            ],
+            [
+                'request' => self::getRequest('application/json;q=0.9'),
+                'supportedMediaTypes' => ['application/vnd.api+json'],
+                'expectedAccept' => new NegotiatedValue('application/vnd.api+json', ['q' => '0.9']),
+            ],
+            [
+                'request' => self::getRequest('application/*/extra'),
+                'supportedMediaTypes' => ['application/json'],
+                'expectedAccept' => null,
             ],
         ];
     }

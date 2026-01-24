@@ -63,6 +63,46 @@ final class ContentTypeMiddlewareTest extends TestCase
         }
     }
 
+    public function testProcessWithoutHeaderValue(): void
+    {
+        $builder = new MockObjectBuilder();
+
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getHeaderLine', ['Content-Type'], ''),
+        ]);
+
+        /** @var RequestHandlerInterface $handler */
+        $handler = $builder->create(RequestHandlerInterface::class, []);
+
+        /** @var ContentTypeNegotiatorInterface $contentTypeNegotiator */
+        $contentTypeNegotiator = $builder->create(ContentTypeNegotiatorInterface::class, [
+            new WithReturn('negotiate', [$request], null),
+            new WithReturn('getSupportedMediaTypes', [], ['application/json']),
+        ]);
+
+        $middleware = new ContentTypeMiddleware($contentTypeNegotiator);
+
+        try {
+            $middleware->process($request, $handler);
+
+            throw new \Exception('code should not be reached');
+        } catch (HttpException $e) {
+            self::assertSame('Unsupported Media Type', $e->getMessage());
+            self::assertSame([
+                'type' => 'https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.16',
+                'status' => 415,
+                'title' => 'Unsupported Media Type',
+                'detail' => 'Missing content-type, supportedValues: "application/json"',
+                'instance' => null,
+                'value' => '',
+                'supportedValues' => [
+                    'application/json',
+                ],
+            ], $e->jsonSerialize());
+        }
+    }
+
     public function testProcessWithMatching(): void
     {
         $builder = new MockObjectBuilder();

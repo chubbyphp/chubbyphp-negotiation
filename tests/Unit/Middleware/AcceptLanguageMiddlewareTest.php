@@ -63,6 +63,46 @@ final class AcceptLanguageMiddlewareTest extends TestCase
         }
     }
 
+    public function testProcessWithoutHeaderValue(): void
+    {
+        $builder = new MockObjectBuilder();
+
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getHeaderLine', ['Accept-Language'], ''),
+        ]);
+
+        /** @var RequestHandlerInterface $handler */
+        $handler = $builder->create(RequestHandlerInterface::class, []);
+
+        /** @var AcceptLanguageNegotiatorInterface $acceptLanguageNegotiator */
+        $acceptLanguageNegotiator = $builder->create(AcceptLanguageNegotiatorInterface::class, [
+            new WithReturn('negotiate', [$request], null),
+            new WithReturn('getSupportedLocales', [], ['en-US']),
+        ]);
+
+        $middleware = new AcceptLanguageMiddleware($acceptLanguageNegotiator);
+
+        try {
+            $middleware->process($request, $handler);
+
+            throw new \Exception('code should not be reached');
+        } catch (HttpException $e) {
+            self::assertSame('Not Acceptable', $e->getMessage());
+            self::assertSame([
+                'type' => 'https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.7',
+                'status' => 406,
+                'title' => 'Not Acceptable',
+                'detail' => 'Missing acceptLanguage, supportedValues: "en-US"',
+                'instance' => null,
+                'value' => '',
+                'supportedValues' => [
+                    'en-US',
+                ],
+            ], $e->jsonSerialize());
+        }
+    }
+
     public function testProcessWithMatching(): void
     {
         $builder = new MockObjectBuilder();
