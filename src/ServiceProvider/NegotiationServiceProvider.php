@@ -21,7 +21,7 @@ final class NegotiationServiceProvider implements ServiceProviderInterface
     public function register(Container $container): void
     {
         $container['negotiator.acceptNegotiator'] = static function () use ($container): AcceptNegotiator {
-            /** @var array<int, string> $supportedMediaTypes */
+            /** @var list<string> $supportedMediaTypes */
             $supportedMediaTypes = $container['negotiator.acceptNegotiator.values'];
 
             return new AcceptNegotiator($supportedMediaTypes);
@@ -35,7 +35,7 @@ final class NegotiationServiceProvider implements ServiceProviderInterface
         };
 
         $container['negotiator.acceptLanguageNegotiator'] = static function () use ($container): AcceptLanguageNegotiator {
-            /** @var array<int, string> $supportedLocales */
+            /** @var list<string> $supportedLocales */
             $supportedLocales = $container['negotiator.acceptLanguageNegotiator.values'];
 
             return new AcceptLanguageNegotiator($supportedLocales);
@@ -49,7 +49,7 @@ final class NegotiationServiceProvider implements ServiceProviderInterface
         };
 
         $container['negotiator.contentTypeNegotiator'] = static function () use ($container): ContentTypeNegotiator {
-            /** @var array<int, string> $supportedMediaTypes */
+            /** @var list<string> $supportedMediaTypes */
             $supportedMediaTypes = $container['negotiator.contentTypeNegotiator.values'];
 
             return new ContentTypeNegotiator($supportedMediaTypes);
@@ -62,13 +62,13 @@ final class NegotiationServiceProvider implements ServiceProviderInterface
             return new ContentTypeMiddleware($contentTypeNegotiator);
         };
 
-        /** @return array<int, string> */
+        /** @return list<string> */
         $container['negotiator.acceptNegotiator.values'] = static fn (): array => [];
 
-        /** @return array<int, string> */
+        /** @return list<string> */
         $container['negotiator.acceptLanguageNegotiator.values'] = static fn (): array => [];
 
-        /** @return array<int, string> */
+        /** @return list<string> */
         $container['negotiator.contentTypeNegotiator.values'] = static fn (): array => [];
     }
 }

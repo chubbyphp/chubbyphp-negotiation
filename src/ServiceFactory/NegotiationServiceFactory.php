@@ -30,7 +30,7 @@ final class NegotiationServiceFactory
                 return new AcceptLanguageMiddleware($acceptLanguageNegotiator);
             },
             'negotiator.acceptLanguageNegotiator' => static function (ContainerInterface $container): AcceptLanguageNegotiator {
-                /** @var array<int, string> $supportedLocales */
+                /** @var list<string> $supportedLocales */
                 $supportedLocales = $container->get('negotiator.acceptLanguageNegotiator.values');
 
                 return new AcceptLanguageNegotiator($supportedLocales);
@@ -42,7 +42,7 @@ final class NegotiationServiceFactory
                 return new AcceptMiddleware($acceptNegotiator);
             },
             'negotiator.acceptNegotiator' => static function (ContainerInterface $container): AcceptNegotiator {
-                /** @var array<int, string> $supportedMediaTypes */
+                /** @var list<string> $supportedMediaTypes */
                 $supportedMediaTypes = $container->get('negotiator.acceptNegotiator.values');
 
                 return new AcceptNegotiator($supportedMediaTypes);
@@ -54,7 +54,7 @@ final class NegotiationServiceFactory
                 return new ContentTypeMiddleware($contentTypeNegotiator);
             },
             'negotiator.contentTypeNegotiator' => static function (ContainerInterface $container): ContentTypeNegotiator {
-                /** @var array<int, string> $supportedMediaTypes */
+                /** @var list<string> $supportedMediaTypes */
                 $supportedMediaTypes = $container->get('negotiator.contentTypeNegotiator.values');
 
                 return new ContentTypeNegotiator($supportedMediaTypes);

@@ -12,12 +12,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterface
 {
     /**
-     * @param array<int, string> $supportedLocales
+     * @param list<string> $supportedLocales
      */
     public function __construct(private readonly array $supportedLocales) {}
 
     /**
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getSupportedLocales(): array
     {

@@ -13,7 +13,7 @@ final class AcceptLanguageNegotiatorFactory extends AbstractFactory
 {
     public function __invoke(ContainerInterface $container): AcceptLanguageNegotiatorInterface
     {
-        /** @var array<int, string> $supportedLocales */
+        /** @var list<string> $supportedLocales */
         $supportedLocales = $container->get(AcceptLanguageNegotiatorInterface::class.'supportedLocales[]'.$this->name);
 
         return new AcceptLanguageNegotiator($supportedLocales);

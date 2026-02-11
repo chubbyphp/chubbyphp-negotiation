@@ -22,7 +22,7 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
     private readonly array $suffixBasedSupportedMediaTypes;
 
     /**
-     * @param array<int, string> $supportedMediaTypes
+     * @param list<string> $supportedMediaTypes
      */
     public function __construct(array $supportedMediaTypes)
     {

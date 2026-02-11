@@ -10,7 +10,7 @@ namespace Chubbyphp\Negotiation;
 interface AcceptLanguageNegotiatorInterface extends NegotiatorInterface
 {
     /**
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getSupportedLocales(): array;
 }

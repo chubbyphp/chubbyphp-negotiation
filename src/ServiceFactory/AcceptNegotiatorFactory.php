@@ -13,7 +13,7 @@ final class AcceptNegotiatorFactory extends AbstractFactory
 {
     public function __invoke(ContainerInterface $container): AcceptNegotiatorInterface
     {
-        /** @var array<int, string> $supportedMediaTypes */
+        /** @var list<string> $supportedMediaTypes */
         $supportedMediaTypes = $container->get(AcceptNegotiatorInterface::class.'supportedMediaTypes[]'.$this->name);
 
         return new AcceptNegotiator($supportedMediaTypes);

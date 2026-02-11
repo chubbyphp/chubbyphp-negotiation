@@ -12,12 +12,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
 {
     /**
-     * @param array<int, string> $supportedMediaTypes
+     * @param list<string> $supportedMediaTypes
      */
     public function __construct(private readonly array $supportedMediaTypes) {}
 
     /**
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getSupportedMediaTypes(): array
     {
