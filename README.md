@@ -31,10 +31,10 @@ A simple negotiation library.
 
 ## Suggest
 
- * chubbyphp/chubbyphp-container: ^2.3
- * chubbyphp/chubbyphp-http-exception: ^1.2
- * chubbyphp/chubbyphp-laminas-config-factory: ^1.4
- * pimple/pimple: ^3.6
+ * chubbyphp/chubbyphp-container: ^2.5.2
+ * chubbyphp/chubbyphp-http-exception: ^1.3.4
+ * chubbyphp/chubbyphp-laminas-config-factory: ^1.5.3
+ * pimple/pimple: ^3.6.2
  * psr/http-server-middleware: ^1.0.2
 
 ## Installation
