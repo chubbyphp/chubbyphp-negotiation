@@ -148,6 +148,11 @@ final class AcceptNegotiatorTest extends TestCase
                 'expectedAccept' => new NegotiatedValue('application/xml', ['q' => '0.1']),
             ],
             [
+                'request' => self::getRequest('application/*, application/xml;q=0.8'),
+                'supportedMediaTypes' => ['application/json', 'application/xhtml+xml'],
+                'expectedAccept' => new NegotiatedValue('application/xhtml+xml', ['q' => '0.8']),
+            ],
+            [
                 'request' => self::getRequest('text/html, application/*;q=0.1'),
                 'supportedMediaTypes' => ['application/json'],
                 'expectedAccept' => new NegotiatedValue('application/json', ['q' => '0.1']),

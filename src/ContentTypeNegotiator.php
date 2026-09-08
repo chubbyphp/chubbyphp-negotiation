@@ -55,11 +55,7 @@ final class ContentTypeNegotiator implements ContentTypeNegotiatorInterface
             return new NegotiatedValue($mediaType, $attributes);
         }
 
-        if (null !== $negotiatedValue = $this->compareMediaTypeWithSuffix($mediaType, $attributes)) {
-            return $negotiatedValue;
-        }
-
-        return null;
+        return $this->compareMediaTypeWithSuffix($mediaType, $attributes);
     }
 
     /**

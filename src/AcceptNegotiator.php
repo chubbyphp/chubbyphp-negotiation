@@ -102,31 +102,64 @@ final class AcceptNegotiator implements AcceptNegotiatorInterface
      */
     private function compareMediaTypes(array $mediaTypes): ?NegotiatedValueInterface
     {
+        return $this->compareExactMediaTypes($mediaTypes)
+            ?? $this->compareMediaTypesWithSuffix($mediaTypes)
+            ?? $this->compareMediaTypesWithTypeOnly($mediaTypes)
+            ?? $this->compareWildcard($mediaTypes);
+    }
+
+    /**
+     * @param array<string, array<string, string>> $mediaTypes
+     */
+    private function compareExactMediaTypes(array $mediaTypes): ?NegotiatedValueInterface
+    {
         foreach ($mediaTypes as $mediaType => $attributes) {
             if (\in_array($mediaType, $this->supportedMediaTypes, true)) {
                 return new NegotiatedValue($mediaType, $attributes);
             }
         }
 
+        return null;
+    }
+
+    /**
+     * @param array<string, array<string, string>> $mediaTypes
+     */
+    private function compareMediaTypesWithSuffix(array $mediaTypes): ?NegotiatedValueInterface
+    {
         foreach ($mediaTypes as $mediaType => $attributes) {
             if (null !== $negotiatedValue = $this->compareMediaTypeWithSuffix($mediaType, $attributes)) {
                 return $negotiatedValue;
             }
         }
 
+        return null;
+    }
+
+    /**
+     * @param array<string, array<string, string>> $mediaTypes
+     */
+    private function compareMediaTypesWithTypeOnly(array $mediaTypes): ?NegotiatedValueInterface
+    {
         foreach ($mediaTypes as $mediaType => $attributes) {
             if (null !== $negotiatedValue = $this->compareMediaTypeWithTypeOnly($mediaType, $attributes)) {
                 return $negotiatedValue;
             }
         }
 
-        if (isset($mediaTypes['*/*'])) {
-            foreach ($this->supportedMediaTypes as $supportedMediaType) {
-                return new NegotiatedValue($supportedMediaType, $mediaTypes['*/*']);
-            }
+        return null;
+    }
+
+    /**
+     * @param array<string, array<string, string>> $mediaTypes
+     */
+    private function compareWildcard(array $mediaTypes): ?NegotiatedValueInterface
+    {
+        if (!isset($mediaTypes['*/*'])) {
+            return null;
         }
 
-        return null;
+        return new NegotiatedValue($this->supportedMediaTypes[0], $mediaTypes['*/*']);
     }
 
     /**

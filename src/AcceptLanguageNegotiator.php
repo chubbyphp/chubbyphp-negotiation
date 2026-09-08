@@ -74,25 +74,49 @@ final class AcceptLanguageNegotiator implements AcceptLanguageNegotiatorInterfac
      */
     private function compareAcceptLanguages(array $acceptLanguages): ?NegotiatedValueInterface
     {
+        return $this->compareExactLocales($acceptLanguages)
+            ?? $this->compareLanguages($acceptLanguages)
+            ?? $this->compareWildcard($acceptLanguages);
+    }
+
+    /**
+     * @param array<string, array<string, string>> $acceptLanguages
+     */
+    private function compareExactLocales(array $acceptLanguages): ?NegotiatedValueInterface
+    {
         foreach ($acceptLanguages as $locale => $attributes) {
             if (\in_array($locale, $this->supportedLocales, true)) {
                 return new NegotiatedValue($locale, $attributes);
             }
         }
 
+        return null;
+    }
+
+    /**
+     * @param array<string, array<string, string>> $acceptLanguages
+     */
+    private function compareLanguages(array $acceptLanguages): ?NegotiatedValueInterface
+    {
         foreach ($acceptLanguages as $locale => $attributes) {
             if (null !== $negotiatedValue = $this->compareLanguage($locale, $attributes)) {
                 return $negotiatedValue;
             }
         }
 
-        if (isset($acceptLanguages['*'])) {
-            foreach ($this->supportedLocales as $supportedLocale) {
-                return new NegotiatedValue($supportedLocale, $acceptLanguages['*']);
-            }
+        return null;
+    }
+
+    /**
+     * @param array<string, array<string, string>> $acceptLanguages
+     */
+    private function compareWildcard(array $acceptLanguages): ?NegotiatedValueInterface
+    {
+        if (!isset($acceptLanguages['*'])) {
+            return null;
         }
 
-        return null;
+        return new NegotiatedValue($this->supportedLocales[0], $acceptLanguages['*']);
     }
 
     /**

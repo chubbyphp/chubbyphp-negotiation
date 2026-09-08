@@ -126,6 +126,11 @@ final class AcceptLanguageNegotiatorTest extends TestCase
                 'expectedAcceptLanguage' => null,
             ],
             [
+                'request' => self::getRequest('*,de-CH;q=0.8'),
+                'supportedLocales' => ['en', 'de'],
+                'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.8']),
+            ],
+            [
                 'request' => self::getRequest('*,de;q=0.1'),
                 'supportedLocales' => ['de'],
                 'expectedAcceptLanguage' => new NegotiatedValue('de', ['q' => '0.1']),
