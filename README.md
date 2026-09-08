@@ -22,7 +22,17 @@
 
 ## Description
 
-A simple negotiation library.
+A small, dependency-light content negotiation library for [PSR-7][8] requests.
+
+It picks the best match between what the client asks for and what your application supports:
+
+ * `Accept` → which media type to respond with
+ * `Accept-Language` → which locale to respond in
+ * `Content-Type` → whether the request body can be parsed
+
+Each negotiator returns a `NegotiatedValue` (the matched value plus its header attributes such as `q` or `charset`),
+or `null` when nothing matches. Optional [PSR-15][9] middlewares turn a failed negotiation into a `406 Not Acceptable`
+or `415 Unsupported Media Type` response and expose the negotiated value as a request attribute.
 
 ## Requirements
 
@@ -31,11 +41,11 @@ A simple negotiation library.
 
 ## Suggest
 
- * chubbyphp/chubbyphp-container: ^2.5.2
- * chubbyphp/chubbyphp-http-exception: ^1.3.4
- * chubbyphp/chubbyphp-laminas-config-factory: ^1.5.3
- * pimple/pimple: ^3.6.2
- * psr/http-server-middleware: ^1.0.2
+ * chubbyphp/chubbyphp-container: ^2.5.2 (for `NegotiationServiceFactory`)
+ * chubbyphp/chubbyphp-http-exception: ^1.3.4 (required by the middlewares)
+ * chubbyphp/chubbyphp-laminas-config-factory: ^1.5.3 (for the laminas-style `ServiceFactory` classes)
+ * pimple/pimple: ^3.6.2 (for `NegotiationServiceProvider`)
+ * psr/http-server-middleware: ^1.0.2 (required by the middlewares)
 
 ## Installation
 
@@ -47,163 +57,117 @@ composer require chubbyphp/chubbyphp-negotiation "^2.3"
 
 ## Usage
 
+All negotiators share the same contract: pass the supported values to the constructor, call `negotiate($request)`
+and receive a `NegotiatedValueInterface` (value + header attributes) or `null` when nothing matches.
+The middlewares wrap a negotiator, store the result as a request attribute and throw an `HttpException` on failure.
+
+Each section below shows the minimal call; the linked page documents the matching rules, edge cases and error data.
+
 ### AcceptLanguageNegotiator
 
+Negotiates `Accept-Language`. Exact locale first, then the language of a regional locale (`en-US` → `en`), then `*`.
+[Full documentation][14]
+
 ```php
-<?php
-
-use Chubbyphp\Negotiation\AcceptLanguageNegotiator;
-
-$request = ...;
-$request->withHeader('Accept-Language', 'de,en-US;q=0.7,en;q=0.3');
-
 $negotiator = new AcceptLanguageNegotiator(['en', 'de']);
-$value = $negotiator->negotiate($request); // NegotiatedValue
-$value->getValue(); // de
-$value->getAttributes(); // ['q' => '1.0']
+
+$value = $negotiator->negotiate($request); // 'Accept-Language: de,en-US;q=0.7,en;q=0.3'
+$value->getValue();                        // 'de'
+$value->getAttributes();                   // ['q' => '1.0']
 ```
 
 ### AcceptLanguageMiddleware
 
+Stores the negotiated locale in the request attribute `acceptLanguage`, or throws `406 Not Acceptable`.
+[Full documentation][15]
+
 ```php
-<?php
+$middleware = new AcceptLanguageMiddleware(new AcceptLanguageNegotiator(['en', 'de']));
 
-use Chubbyphp\Negotiation\Middleware\AcceptLanguageMiddleware;
-
-$request = ...;
-$request->withHeader('Accept-Language', 'de,en-US;q=0.7,en;q=0.3');
-
-$middleware = new AcceptLanguageMiddleware($acceptLanguageNegotiator);
-$response = $negotiator->process($request, $handler);
+$response = $middleware->process($request, $handler); // $request->getAttribute('acceptLanguage') inside $handler
 ```
 
 ### AcceptNegotiator
 
+Negotiates `Accept`. Exact media type first, then structured suffix (`+json`), then `type/*`, then `*/*`.
+[Full documentation][16]
+
 ```php
-<?php
-
-use Chubbyphp\Negotiation\AcceptNegotiator;
-
-$request = ...;
-$request->withHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q =0.8');
-
 $negotiator = new AcceptNegotiator(['application/json', 'application/xml', 'application/x-yaml']);
-$value = $negotiator->negotiate($request); // NegotiatedValue
-$value->getValue(); // application/xml
-$value->getAttributes(); // ['q' => '0.9']
+
+$value = $negotiator->negotiate($request); // 'Accept: text/html,application/xml;q=0.9,*/*;q=0.8'
+$value->getValue();                        // 'application/xml'
+$value->getAttributes();                   // ['q' => '0.9']
 ```
 
 ### AcceptMiddleware
 
+Stores the negotiated media type in the request attribute `accept`, or throws `406 Not Acceptable`.
+[Full documentation][17]
+
 ```php
-<?php
+$middleware = new AcceptMiddleware(new AcceptNegotiator(['application/json', 'application/xml']));
 
-use Chubbyphp\Negotiation\Middleware\AcceptMiddleware;
-
-$request = ...;
-$request->withHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q =0.8');
-
-$middleware = new AcceptMiddleware($acceptNegotiator);
-$response = $negotiator->process($request, $handler);
+$response = $middleware->process($request, $handler); // $request->getAttribute('accept') inside $handler
 ```
 
 ### ContentTypeNegotiator
 
+Negotiates `Content-Type`. Exact media type first, then structured suffix (`application/vnd.api+json` → `application/json`).
+Header parameters such as `charset` are returned as attributes.
+[Full documentation][18]
+
 ```php
-<?php
-
-use Chubbyphp\Negotiation\ContentTypeNegotiator;
-
-$request = ...;
-$request->withHeader('Content-Type', 'application/xml; charset=UTF-8');
-
 $negotiator = new ContentTypeNegotiator(['application/json', 'application/xml', 'application/x-yaml']);
-$value = $negotiator->negotiate($request); // NegotiatedValue
-$value->getValue(); // application/xml
-$value->getAttributes(); // ['charset' => 'UTF-8']
+
+$value = $negotiator->negotiate($request); // 'Content-Type: application/xml; charset=UTF-8'
+$value->getValue();                        // 'application/xml'
+$value->getAttributes();                   // ['charset' => 'UTF-8']
 ```
 
 ### ContentTypeMiddleware
 
+Stores the negotiated media type in the request attribute `contentType`, or throws `415 Unsupported Media Type`.
+[Full documentation][19]
+
 ```php
-<?php
+$middleware = new ContentTypeMiddleware(new ContentTypeNegotiator(['application/json', 'application/xml']));
 
-use Chubbyphp\Negotiation\Middleware\ContentTypeMiddleware;
-
-$request = ...;
-$request->withHeader('Content-Type', 'application/xml; charset=UTF-8');
-
-$middleware = new ContentTypeMiddleware($contentTypeNegotiator);
-$response = $negotiator->process($request, $handler);
+$response = $middleware->process($request, $handler); // $request->getAttribute('contentType') inside $handler
 ```
 
 ### NegotiationServiceFactory
 
+Registers all negotiators and middlewares in a [chubbyphp/chubbyphp-container][10] under `negotiator.*` ids.
+The supported values are read from `negotiator.*.values` services, which default to `[]`.
+[Full documentation][20]
+
 ```php
-<?php
-
-use Chubbyphp\Container\Container;
-use Chubbyphp\Negotiation\ServiceFactory\NegotiationServiceFactory;
-use Psr\Http\Message\ServerRequestInterface;
-
 $container = new Container();
 $container->factories((new NegotiationServiceFactory())());
+$container->factory('negotiator.acceptNegotiator.values', static fn (): array => ['application/json']);
 
-$request = ...;
-
-$container->get('negotiator.acceptNegotiator')
-    ->negotiate($request);
-
-$container->get('negotiator.acceptMiddleware')
-    ->process($request, $handler);
-
-$container->get('negotiator.acceptLanguageNegotiator')
-    ->negotiate($request);
-
-$container->get('negotiator.acceptLanguageMiddleware')
-    ->process($request, $handler);
-
-$container->get('negotiator.contentTypeNegotiator')
-    ->negotiate($request);
-
-$container->get('negotiator.contentTypeMiddleware')
-    ->process($request, $handler);
+$container->get('negotiator.acceptMiddleware')->process($request, $handler);
 ```
 
 ### NegotiationServiceProvider
 
+Registers the same services in a [Pimple][11] container, using the same service ids.
+[Full documentation][21]
+
 ```php
-<?php
-
-use Chubbyphp\Negotiation\ServiceProvider\NegotiationServiceProvider;
-use Pimple\Container;
-use Psr\Http\Message\ServerRequestInterface;
-
 $container = new Container();
-$container->register(new NegotiationServiceProvider);
+$container->register(new NegotiationServiceProvider());
+$container['negotiator.acceptNegotiator.values'] = ['application/json'];
 
-$request = ...;
-
-$container['negotiator.acceptNegotiator']
-    ->negotiate($request);
-
-$container['negotiator.acceptMiddleware']
-    ->process($request, $handler);
-
-$container['negotiator.acceptLanguageNegotiator']
-    ->negotiate($request);
-
-$container['negotiator.acceptLanguageMiddleware']
-    ->process($request, $handler);
-
-$container['negotiator.contentTypeNegotiator']
-    ->negotiate($request);
-
-$container['negotiator.contentTypeMiddleware']
-    ->process($request, $handler);
+$container['negotiator.acceptMiddleware']->process($request, $handler);
 ```
 
 ### ServiceFactory
+
+Invokable factories built on [chubbyphp/chubbyphp-laminas-config-factory][12] for
+[laminas-servicemanager][13] style containers. Each factory can be used unnamed or with a name
+(`[Factory::class, 'name']`) to register several independent instances.
 
  * [AcceptLanguageMiddlewareFactory][2]
  * [AcceptLanguageNegotiatorFactory][3]
@@ -224,3 +188,19 @@ $container['negotiator.contentTypeMiddleware']
 [5]: doc/ServiceFactory/AcceptNegotiatorFactory.md
 [6]: doc/ServiceFactory/ContentTypeMiddlewareFactory.md
 [7]: doc/ServiceFactory/ContentTypeNegotiatorFactory.md
+
+[8]: https://www.php-fig.org/psr/psr-7/
+[9]: https://www.php-fig.org/psr/psr-15/
+[10]: https://github.com/chubbyphp/chubbyphp-container
+[11]: https://github.com/silexphp/Pimple
+[12]: https://github.com/chubbyphp/chubbyphp-laminas-config-factory
+[13]: https://docs.laminas.dev/laminas-servicemanager/
+
+[14]: doc/AcceptLanguageNegotiator.md
+[15]: doc/Middleware/AcceptLanguageMiddleware.md
+[16]: doc/AcceptNegotiator.md
+[17]: doc/Middleware/AcceptMiddleware.md
+[18]: doc/ContentTypeNegotiator.md
+[19]: doc/Middleware/ContentTypeMiddleware.md
+[20]: doc/ServiceFactory/NegotiationServiceFactory.md
+[21]: doc/ServiceProvider/NegotiationServiceProvider.md
