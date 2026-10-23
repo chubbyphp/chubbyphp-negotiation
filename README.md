@@ -41,9 +41,9 @@ or `415 Unsupported Media Type` response and expose the negotiated value as a re
 
 ## Suggest
 
- * chubbyphp/chubbyphp-container: ^2.5.2 (for `NegotiationServiceFactory`)
- * chubbyphp/chubbyphp-http-exception: ^1.3.4 (required by the middlewares)
- * chubbyphp/chubbyphp-laminas-config-factory: ^1.5.3 (for the laminas-style `ServiceFactory` classes)
+ * chubbyphp/chubbyphp-container: ^2.5.3 (for `NegotiationServiceFactory`)
+ * chubbyphp/chubbyphp-http-exception: ^1.3.5 (required by the middlewares)
+ * chubbyphp/chubbyphp-laminas-config-factory: ^1.5.5 (for the laminas-style `ServiceFactory` classes)
  * pimple/pimple: ^3.6.2 (for `NegotiationServiceProvider`)
  * psr/http-server-middleware: ^1.0.2 (required by the middlewares)
 
